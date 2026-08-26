@@ -45,3 +45,8 @@ venv/
 # OS metadata
 .DS_Store
 Thumbs.db
+
+# Node.js
+node_modules/
+**/node_modules/
+package-lock.json

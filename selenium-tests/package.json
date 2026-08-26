@@ -1,0 +1,18 @@
+{
+  "name": "ikizen-selenium-tests",
+  "version": "1.0.0",
+  "description": "Selenium E2E Functionality and Automation Test Suite for IKIZEN Web Frontend",
+  "main": "tests/login-tests.js",
+  "scripts": {
+    "test": "node tests/login-tests.js",
+    "generate-report": "node generate-excel-report.js"
+  },
+  "keywords": ["selenium", "webdriver", "e2e", "ikizen", "testing"],
+  "author": "IKIZEN QA Team",
+  "license": "ISC",
+  "dependencies": {
+    "chromedriver": "^133.0.0",
+    "exceljs": "^4.4.0",
+    "selenium-webdriver": "^4.28.0"
+  }
+}
