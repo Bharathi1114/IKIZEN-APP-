@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    
+    <!-- Welcome Screen Colors -->
+    <color name="bg_gradient_start">#14304D</color>
+    <color name="bg_gradient_end">#1C6178</color>
+    <color name="teal_accent">#1CA6A6</color>
+    <color name="text_secondary">#C0C0C0</color>
+    <color name="category_btn_bg">#254567</color>
+    <!-- Sign Up Screen Colors -->
+    <color name="signup_bg">#F4F7FB</color>
+    <color name="signup_text_primary">#0B132B</color>
+    <color name="signup_text_secondary">#758494</color>
+    <color name="signup_input_border">#E0E5EC</color>
+    <color name="signup_input_bg">#FFFFFF</color>
+</resources>

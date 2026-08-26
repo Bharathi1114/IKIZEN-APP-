@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/app_bg"
+    tools:context=".GoalsActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/bottomLayout">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <!-- Top Bar -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                
+                <ImageView
+                    android:id="@+id/btnBack"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_card"
+                    android:src="@android:drawable/ic_media_previous"
+                    android:padding="8dp"
+                    app:tint="@color/black"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"/>
+                    
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="STEP 2 OF 8"
+                    android:textColor="#1877F2"
+                    android:textStyle="bold"
+                    android:textSize="12sp"
+                    android:layout_marginStart="16dp"
+                    app:layout_constraintTop_toTopOf="@id/btnBack"
+                    app:layout_constraintBottom_toTopOf="@+id/progressBar"
+                    app:layout_constraintStart_toEndOf="@id/btnBack"/>
+                    
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="25%"
+                    android:textColor="#758494"
+                    android:textSize="12sp"
+                    app:layout_constraintTop_toTopOf="@id/btnBack"
+                    app:layout_constraintBottom_toTopOf="@+id/progressBar"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+                    
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="8dp"
+                    android:layout_marginStart="16dp"
+                    android:progress="25"
+                    android:progressTint="#1CA6A6"
+                    android:progressBackgroundTint="#E0E5EC"
+                    app:layout_constraintBottom_toBottomOf="@id/btnBack"
+                    app:layout_constraintStart_toEndOf="@id/btnBack"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="What is your primary goal?"
+                android:textColor="#0B132B"
+                android:textSize="28sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Pick one main goal — you can add secondary goals underneath."
+                android:textColor="#758494"
+                android:textSize="14sp" />
+
+            <!-- Primary Goals Grid -->
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:columnCount="2"
+                android:rowCount="3"
+                android:useDefaultMargins="true">
+                
+                <!-- Card 1 -->
+                <LinearLayout
+                    android:id="@+id/llGoalLoseWeight"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/bg_goal_card_unselected"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+                    <ImageView android:id="@+id/ivGoalLoseWeight" android:layout_width="32dp" android:layout_height="32dp" android:src="@android:drawable/ic_menu_agenda"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Lose Weight" android:textStyle="bold" android:textColor="#0B132B" android:layout_marginTop="12dp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Sustainable fat loss" android:textSize="12sp" android:textColor="#758494"/>
+                </LinearLayout>
+                
+                <!-- Card 2 (Selected) -->
+                <LinearLayout
+                    android:id="@+id/llGoalBuildMuscle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/bg_goal_card_unselected"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+                    <ImageView android:id="@+id/ivGoalBuildMuscle" android:layout_width="32dp" android:layout_height="32dp" android:src="@android:drawable/star_on" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Build Muscle" android:textStyle="bold" android:textColor="#0B132B" android:layout_marginTop="12dp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Strength + lean mass" android:textSize="12sp" android:textColor="#758494"/>
+                </LinearLayout>
+
+                <!-- Card 3 -->
+                <LinearLayout
+                    android:id="@+id/llGoalGainWeight"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/bg_goal_card_unselected"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+                    <ImageView android:id="@+id/ivGoalGainWeight" android:layout_width="32dp" android:layout_height="32dp" android:src="@android:drawable/ic_menu_agenda"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Gain Weight" android:textStyle="bold" android:textColor="#0B132B" android:layout_marginTop="12dp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Healthy surplus" android:textSize="12sp" android:textColor="#758494"/>
+                </LinearLayout>
+
+                <!-- Card 4 -->
+                <LinearLayout
+                    android:id="@+id/llGoalImproveFitness"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/bg_goal_card_unselected"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+                    <ImageView android:id="@+id/ivGoalImproveFitness" android:layout_width="32dp" android:layout_height="32dp" android:src="@android:drawable/ic_menu_agenda"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Improve Fitness" android:textStyle="bold" android:textColor="#0B132B" android:layout_marginTop="12dp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Move better daily" android:textSize="12sp" android:textColor="#758494"/>
+                </LinearLayout>
+            </GridLayout>
+
+            <!-- Secondary Goals -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="Secondary goals"
+                android:textColor="#0B132B"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Optional — up to three"
+                android:textColor="#758494"
+                android:textSize="14sp" />
+
+            <!-- Using nested LinearLayouts for basic flow wrapping simulation -->
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="12dp">
+                <TextView android:id="@+id/tvSecLoseWeight" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Lose Weight" android:background="@drawable/bg_chip_unselected" android:padding="12dp" android:textColor="#0B132B" android:layout_marginEnd="8dp"/>
+                <TextView android:id="@+id/tvSecGainWeight" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Gain Weight" android:background="@drawable/bg_chip_unselected" android:padding="12dp" android:textColor="#0B132B"/>
+            </LinearLayout>
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="8dp">
+                <TextView android:id="@+id/tvSecImproveFitness" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Improve Fitness" android:background="@drawable/bg_chip_unselected" android:padding="12dp" android:textColor="#0B132B" android:layout_marginEnd="8dp"/>
+                <TextView android:id="@+id/tvSecIncreaseStrength" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Increase Strength" android:background="@drawable/bg_chip_unselected" android:padding="12dp" android:textColor="#0B132B"/>
+            </LinearLayout>
+
+            <!-- Current Fitness Level -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="Current fitness level"
+                android:textColor="#0B132B"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:layout_marginTop="12dp">
+                <LinearLayout android:id="@+id/llFitnessBeginner" android:layout_width="match_parent" android:layout_height="wrap_content" android:background="@drawable/bg_goal_card_unselected" android:padding="16dp" android:orientation="vertical" android:layout_marginBottom="12dp">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Beginner" android:textStyle="bold" android:textColor="#0B132B"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="New or returning to training" android:textSize="12sp" android:textColor="#758494"/>
+                </LinearLayout>
+                
+                <LinearLayout android:id="@+id/llFitnessIntermediate" android:layout_width="match_parent" android:layout_height="wrap_content" android:background="@drawable/bg_goal_card_unselected" android:padding="16dp" android:orientation="vertical" android:layout_marginBottom="12dp">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Intermediate" android:textStyle="bold" android:textColor="#0B132B"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="6+ months of consistency" android:textSize="12sp" android:textColor="#758494"/>
+                </LinearLayout>
+                
+                <LinearLayout android:id="@+id/llFitnessAdvanced" android:layout_width="match_parent" android:layout_height="wrap_content" android:background="@drawable/bg_goal_card_unselected" android:padding="16dp" android:orientation="vertical">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Advanced" android:textStyle="bold" android:textColor="#0B132B"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="2+ years, structured training" android:textSize="12sp" android:textColor="#758494"/>
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Sticky Bottom Bar -->
+    <LinearLayout
+        android:id="@+id/bottomLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:background="#F4F7FB"
+        app:layout_constraintBottom_toBottomOf="parent">
+            
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnContinueGoals"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@drawable/bg_button_primary"
+            android:text="Continue  &gt;"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textAllCaps="false" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

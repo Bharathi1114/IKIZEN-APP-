@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/app_bg"
+    tools:context=".TargetActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/bottomLayout">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <!-- Title Section -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="YOUR PLAN, CALCULATED"
+                android:textColor="#1877F2"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textAllCaps="true"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Your iKizen Nutrition Target"
+                android:textColor="#0B132B"
+                android:textSize="28sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Based on your profile, goals, activity level, and preferences."
+                android:textColor="#758494"
+                android:textSize="14sp" />
+
+            <!-- Main Gradient Card -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/bg_gradient_card"
+                android:padding="32dp">
+
+                <ProgressBar
+                    android:id="@+id/progressMain"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:progressDrawable="@drawable/bg_ring_blue"
+                    android:progress="75"
+                    android:indeterminate="false"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:rotation="-90"/>
+                    
+                <!-- Using a simple layered approach to mimic the ring -->
+                <ImageView
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:src="@drawable/bg_ring_blue"
+                    app:tint="#40FFFFFF"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+                    
+                <ImageView
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:src="@drawable/bg_ring_blue"
+                    app:tint="#00E5FF"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toTopOf="@+id/tvTag"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
+                    
+                    <TextView
+                        android:id="@+id/tvCaloriesVal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="2,870"
+                        android:textColor="@color/white"
+                        android:textSize="40sp"
+                        android:textStyle="bold" />
+                        
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="KCAL / DAY"
+                        android:textColor="#B3FFFFFF"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:layout_marginTop="4dp"/>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tvTag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:background="@drawable/bg_tag_darkblue"
+                    android:backgroundTint="#33FFFFFF"
+                    android:paddingStart="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="16dp"
+                    android:paddingBottom="8dp"
+                    android:text="Build Muscle · Moderately Active"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/progressMain" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- Macros Cards -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal"
+                android:weightSum="3">
+                
+                <!-- Protein -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/bg_card"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+                    <androidx.constraintlayout.widget.ConstraintLayout android:layout_width="64dp" android:layout_height="64dp">
+                        <ImageView android:layout_width="match_parent" android:layout_height="match_parent" android:src="@drawable/bg_ring_blue" />
+                        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="vertical" android:gravity="center" app:layout_constraintTop_toTopOf="parent" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent">
+                            <TextView android:id="@+id/tvProteinVal" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="145" android:textStyle="bold" android:textColor="#0B132B" android:textSize="16sp"/>
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="g" android:textColor="#758494" android:textSize="10sp"/>
+                        </LinearLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Protein" android:textColor="#0B132B" android:textStyle="bold" android:textSize="12sp" android:layout_marginTop="12dp"/>
+                </LinearLayout>
+
+                <!-- Carbs -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="4dp"
+                    android:background="@drawable/bg_card"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+                    <androidx.constraintlayout.widget.ConstraintLayout android:layout_width="64dp" android:layout_height="64dp">
+                        <ImageView android:layout_width="match_parent" android:layout_height="match_parent" android:src="@drawable/bg_ring_green" />
+                        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="vertical" android:gravity="center" app:layout_constraintTop_toTopOf="parent" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent">
+                            <TextView android:id="@+id/tvCarbsVal" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="380" android:textStyle="bold" android:textColor="#0B132B" android:textSize="16sp"/>
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="g" android:textColor="#758494" android:textSize="10sp"/>
+                        </LinearLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Carbs" android:textColor="#0B132B" android:textStyle="bold" android:textSize="12sp" android:layout_marginTop="12dp"/>
+                </LinearLayout>
+
+                <!-- Fat -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/bg_card"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+                    <androidx.constraintlayout.widget.ConstraintLayout android:layout_width="64dp" android:layout_height="64dp">
+                        <ImageView android:layout_width="match_parent" android:layout_height="match_parent" android:src="@drawable/bg_ring_purple" />
+                        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="vertical" android:gravity="center" app:layout_constraintTop_toTopOf="parent" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent">
+                            <TextView android:id="@+id/tvFatVal" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="85" android:textStyle="bold" android:textColor="#0B132B" android:textSize="16sp"/>
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="g" android:textColor="#758494" android:textSize="10sp"/>
+                        </LinearLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Fat" android:textColor="#0B132B" android:textStyle="bold" android:textSize="12sp" android:layout_marginTop="12dp"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Metrics List -->
+            <!-- Water -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_card"
+                android:padding="16dp">
+                
+                <ImageView
+                    android:id="@+id/icWater"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@android:drawable/ic_dialog_map"
+                    android:background="@drawable/bg_chip_unselected"
+                    android:backgroundTint="#F0F7FF"
+                    android:padding="8dp"
+                    app:tint="#1877F2"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    app:layout_constraintStart_toEndOf="@id/icWater"
+                    app:layout_constraintEnd_toStartOf="@id/tvWaterVal"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Daily water target" android:textColor="#0B132B" android:textStyle="bold" android:textSize="14sp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Spread across the day, more on training days" android:textColor="#758494" android:textSize="12sp" android:layout_marginTop="4dp"/>
+                </LinearLayout>
+                
+                <TextView
+                    android:id="@+id/tvWaterVal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2.7 L"
+                    android:textColor="#0B132B"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- Fibre -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/bg_card"
+                android:padding="16dp">
+                
+                <ImageView
+                    android:id="@+id/icFibre"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@android:drawable/ic_menu_add"
+                    android:background="@drawable/bg_chip_unselected"
+                    android:backgroundTint="#E8F5E9"
+                    android:padding="8dp"
+                    app:tint="#43A047"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    app:layout_constraintStart_toEndOf="@id/icFibre"
+                    app:layout_constraintEnd_toStartOf="@id/tvFibreVal"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Suggested fibre intake" android:textColor="#0B132B" android:textStyle="bold" android:textSize="14sp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Supports digestion and fullness" android:textColor="#758494" android:textSize="12sp" android:layout_marginTop="4dp"/>
+                </LinearLayout>
+                
+                <TextView
+                    android:id="@+id/tvFibreVal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="40 g"
+                    android:textColor="#0B132B"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- Meal Frequency -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/bg_card"
+                android:padding="16dp">
+                
+                <ImageView
+                    android:id="@+id/icMeal"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@android:drawable/ic_menu_compass"
+                    android:background="@drawable/bg_chip_unselected"
+                    android:backgroundTint="#F3E5F5"
+                    android:padding="8dp"
+                    app:tint="#8E24AA"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    app:layout_constraintStart_toEndOf="@id/icMeal"
+                    app:layout_constraintEnd_toStartOf="@id/tvMealVal"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Recommended meal frequency" android:textColor="#0B132B" android:textStyle="bold" android:textSize="14sp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Matches your 4 meals/day preference" android:textColor="#758494" android:textSize="12sp" android:layout_marginTop="4dp"/>
+                </LinearLayout>
+                
+                <TextView
+                    android:id="@+id/tvMealVal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="4x"
+                    android:textColor="#0B132B"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- Grey Info Disclaimer -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/bg_info_grey"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                android:gravity="top">
+                
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@android:drawable/ic_dialog_info"
+                    app:tint="#758494"
+                    android:layout_marginTop="2dp"/>
+                
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:text="These are estimated wellness targets, not medical prescriptions. iKizen does not replace advice from a doctor or registered dietitian."
+                    android:textColor="#758494"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Sticky Bottom Bar -->
+    <LinearLayout
+        android:id="@+id/bottomLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:background="#F4F7FB"
+        app:layout_constraintBottom_toBottomOf="parent">
+            
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnBuildPlan"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@drawable/bg_button_primary"
+            android:text="Build My Meal Plan"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textAllCaps="false" />
+            
+        <TextView
+            android:id="@+id/btnEditInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Edit My Information"
+            android:textColor="#1877F2"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_gravity="center" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,22 @@
+const diet = meta.diet || 'Balanced';
+            let dynamicFoods = [
+                { name: 'Chicken Breast', cals: 200, p: 40 },
+                { name: 'Brown Rice', cals: 215, p: 5 },
+                { name: 'Broccoli', cals: 55, p: 4 }
+            ];
+            if (diet.includes('Vegan') || diet.includes('Vegetarian')) {
+                dynamicFoods = [
+                    { name: 'Tofu', cals: 120, p: 14 },
+                    { name: 'Lentils', cals: 230, p: 18 },
+                    { name: 'Quinoa', cals: 222, p: 8 }
+                ];
+            } else if (diet.includes('Keto') || diet.includes('Paleo')) {
+                dynamicFoods = [
+                    { name: 'Avocado', cals: 240, p: 3 },
+                    { name: 'Salmon', cals: 206, p: 22 },
+                    { name: 'Almonds', cals: 164, p: 6 }
+                ];
+            }
+
+            let dynamicWorkouts = [
+                { name: 'Squats', desc: '3 sets × 15 reps' }

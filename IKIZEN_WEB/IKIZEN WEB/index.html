@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IKIZEN App</title>
+    <!-- Tailwind CSS (CDN for Development) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#10B981', 
+                        secondary: '#3B82F6',
+                        background: '#F9FAFB',
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-gray-100 flex flex-col min-h-screen w-full m-0 p-0">
+    
+    <!-- Full Web Container -->
+    <script>
+        window.onerror = function(msg, url, lineNo, columnNo, error) {
+            document.getElementById('app-content').innerHTML = 
+                '<div style="color:red; padding: 20px;">' +
+                '<h3>App Crashed!</h3>' +
+                '<p><b>Message:</b> ' + msg + '</p>' +
+                '<p><b>Line:</b> ' + lineNo + '</p>' +
+                '<p><b>Column:</b> ' + columnNo + '</p>' +
+                '</div>';
+            return false;
+        };
+        window.addEventListener('unhandledrejection', function(event) {
+            document.getElementById('app-content').innerHTML = 
+                '<div style="color:red; padding: 20px;">' +
+                '<h3>Promise Rejected!</h3>' +
+                '<p><b>Reason:</b> ' + event.reason + '</p>' +
+                '</div>';
+        });
+    </script>
+    <div id="app-container" class="bg-white w-full h-screen overflow-y-auto relative flex flex-col">
+        
+        <!-- Views will be injected here -->
+        <main id="app-content" class="flex-1 w-full relative">
+            <div class="flex flex-col items-center justify-center h-full min-h-[500px]">
+                <h1 class="text-3xl font-bold text-primary mb-4">IKIZEN</h1>
+                <p class="text-gray-500 text-center">Loading...</p>
+            </div>
+        </main>
+
+        <!-- Navigation Placeholder -->
+        <nav id="bottom-nav" class="bg-white border-t border-gray-200 hidden">
+        </nav>
+
+    </div>
+
+    <!-- App Logic Scripts -->
+    <script src="js/supabaseClient.js"></script>
+    <script src="js/app.js?v=7"></script>
+</body>
+</html>
