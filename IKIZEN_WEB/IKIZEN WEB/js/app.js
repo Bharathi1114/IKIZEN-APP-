@@ -3067,6 +3067,202 @@ const App = {
         ]
     },
 
+    getAICoachContext(meta = {}, user = null) {
+        const userMeta = meta || (user && user.user_metadata) || {};
+        
+        let weightKg = parseFloat(userMeta.weight) || 70;
+        if (userMeta.weight_unit === 'lbs') weightKg = weightKg / 2.20462;
+        let heightCm = parseFloat(userMeta.height) || 170;
+        if (userMeta.height_unit === 'ft' && heightCm < 10) heightCm = heightCm * 30.48;
+
+        const age = parseInt(userMeta.age) || 28;
+        const gender = userMeta.gender || 'Male';
+        const goal = userMeta.primary_goal || 'Maintain Weight';
+        const activity = userMeta.daily_activity_level || 'Moderately Active';
+        const diet = (userMeta.diet || 'vegetarian').toLowerCase();
+        const sittingHours = parseFloat(userMeta.sitting_hours) || 6;
+        const sleepHours = parseFloat(userMeta.sleep_duration) || 7.5;
+        const name = userMeta.name || 'Champion';
+
+        // Calculate Target Macros
+        let bmr = (10 * weightKg) + (6.25 * heightCm) - (5 * age);
+        bmr = gender === 'Male' ? bmr + 5 : bmr - 161;
+        let activityMultiplier = 1.375;
+        if (activity.toLowerCase().includes('sedentary')) activityMultiplier = 1.2;
+        else if (activity.toLowerCase().includes('light')) activityMultiplier = 1.375;
+        else if (activity.toLowerCase().includes('very')) activityMultiplier = 1.725;
+        else if (activity.toLowerCase().includes('moderate')) activityMultiplier = 1.55;
+
+        let tdee = Math.round(bmr * activityMultiplier);
+        let targetCalories = tdee;
+        if (goal.toLowerCase().includes('lose')) targetCalories = Math.max(1200, tdee - 500);
+        else if (goal.toLowerCase().includes('gain')) targetCalories = tdee + 400;
+
+        const targetProtein = Math.round((targetCalories * 0.25) / 4);
+        const targetCarbs = Math.round((targetCalories * 0.50) / 4);
+        const targetFat = Math.round((targetCalories * 0.25) / 9);
+
+        // Gather Logged Totals
+        const foods = (this.foodLogState && this.foodLogState.log) || [];
+        const workouts = (this.workoutLogState && this.workoutLogState.log) || [];
+        const moods = (this.moodState && this.moodState.logs) || [];
+
+        let consumedCals = 0, consumedProtein = 0, consumedCarbs = 0, consumedFat = 0;
+        foods.forEach(f => {
+            consumedCals += Number(f.calories) || 0;
+            consumedProtein += Number(f.protein) || 0;
+            consumedCarbs += Number(f.carbs) || 0;
+            consumedFat += Number(f.fat) || 0;
+        });
+
+        let burnedCals = 0, workoutMins = 0;
+        workouts.forEach(w => {
+            burnedCals += Number(w.calories_burned || w.calories) || 0;
+            workoutMins += Number(w.duration_minutes || w.duration) || 0;
+        });
+
+        const remainingCals = Math.max(0, targetCalories - consumedCals);
+        const remainingProtein = Math.max(0, targetProtein - consumedProtein);
+        const remainingCarbs = Math.max(0, targetCarbs - consumedCarbs);
+        const remainingFat = Math.max(0, targetFat - consumedFat);
+
+        // Pillar Adherence Scores (0-100)
+        const calAdherence = targetCalories > 0 ? Math.min(100, Math.round((consumedCals / targetCalories) * 100)) : 50;
+        const proteinAdherence = targetProtein > 0 ? Math.min(100, Math.round((consumedProtein / targetProtein) * 100)) : 50;
+        const nutritionScore = Math.min(100, Math.round(calAdherence * 0.4 + proteinAdherence * 0.6));
+
+        const movementScore = workoutMins >= 30 ? 95 : (workoutMins > 0 ? 75 : (sittingHours > 8 ? 52 : 68));
+        const recoveryScore = sleepHours >= 7 && sleepHours <= 9 ? 92 : (sleepHours < 6 ? 58 : 74);
+        const latestMood = moods.length > 0 ? moods[0] : null;
+        const moodScore = latestMood ? (['happy', 'energetic', 'calm'].includes(latestMood.mood?.toLowerCase()) ? 90 : 65) : 78;
+
+        const overallVitality = Math.min(100, Math.max(20, Math.round(
+            nutritionScore * 0.35 + movementScore * 0.25 + recoveryScore * 0.25 + moodScore * 0.15
+        )));
+
+        // Generate 4-Pillar Smart Insights
+        const insights = [];
+
+        // 1. Nutrition Insight
+        if (remainingProtein > 25) {
+            insights.push({
+                pillar: 'Nutrition',
+                icon: '🥩',
+                tag: 'MACRO GAP',
+                title: 'Protein Synthesis Threshold',
+                desc: `You need ${remainingProtein}g more protein to hit optimal muscle preservation. Prioritize a high-protein meal like tofu, paneer, eggs, or lentils.`,
+                status: 'amber'
+            });
+        } else {
+            insights.push({
+                pillar: 'Nutrition',
+                icon: '🥗',
+                tag: 'OPTIMAL FUEL',
+                title: 'Macro Balance Aligned',
+                desc: `Calorie pacing and protein threshold (${consumedProtein}g / ${targetProtein}g) are steady for your ${goal} target.`,
+                status: 'emerald'
+            });
+        }
+
+        // 2. Movement Insight
+        if (sittingHours >= 7 && workoutMins < 20) {
+            insights.push({
+                pillar: 'Movement',
+                icon: '⚡',
+                tag: 'ACTIVE RECOVERY',
+                title: 'High Sitting Load Counterbalance',
+                desc: `Sitting for ${sittingHours} hrs increases hip flexor tension. A quick 10-min mobility stretch or brisk walk will boost glucose clearance.`,
+                status: 'blue'
+            });
+        } else {
+            insights.push({
+                pillar: 'Movement',
+                icon: '🏋️',
+                tag: 'METABOLIC ADAPTATION',
+                title: 'Exertion & Tone Synchronized',
+                desc: `Good physical volume logged (${workoutMins} mins, ~${burnedCals} kcal burned). Great cardiovascular support today.`,
+                status: 'emerald'
+            });
+        }
+
+        // 3. Recovery Insight
+        insights.push({
+            pillar: 'Recovery',
+            icon: '🌙',
+            tag: 'CIRCADIAN SYNC',
+            title: 'Evening Digital Sunset Protocol',
+            desc: `Dim screens 45 mins before your ${sleepHours}h sleep window. Incorporate 4-7-8 breathwork to lower cortisol and increase REM depth.`,
+            status: 'purple'
+        });
+
+        // 4. Mindset Insight
+        insights.push({
+            pillar: 'Mindset',
+            icon: '🧘',
+            tag: 'MENTAL VITALITY',
+            title: 'Cognitive Reset & Dopamine Anchor',
+            desc: `Consistency builds sustainable neuroplasticity. Celebrate completing today's nutrition and hydration milestones.`,
+            status: 'teal'
+        });
+
+        // Curated Tailored Meal Suggestions
+        let mealSuggestions = [];
+        if (diet.includes('vegan')) {
+            mealSuggestions = [
+                { name: 'Tofu & Edamame Quinoa Bowl', cals: 420, p: 32, c: 45, f: 12, reason: 'High leucine plant protein for cell repair' },
+                { name: 'Tempeh Avocado Wrap with Greens', cals: 380, p: 26, c: 38, f: 14, reason: 'Slow burning complex carbs & good fats' },
+                { name: 'High-Protein Lentil & Spinach Stew', cals: 350, p: 28, c: 48, f: 6, reason: 'Rich in iron, magnesium, and dietary fiber' }
+            ];
+        } else if (diet.includes('non-veg') || diet.includes('non_veg')) {
+            mealSuggestions = [
+                { name: 'Herb Grilled Chicken Breast & Asparagus', cals: 390, p: 44, c: 15, f: 12, reason: 'Lean protein density with low glycemic load' },
+                { name: 'Pan-Seared Salmon & Quinoa Medley', cals: 460, p: 38, c: 35, f: 18, reason: 'Rich in Omega-3 fatty acids for recovery' },
+                { name: 'Egg White & Turkey Spinach Scramble', cals: 310, p: 36, c: 10, f: 8, reason: 'Rapid absorption amino acids for tissue synthesis' }
+            ];
+        } else {
+            mealSuggestions = [
+                { name: 'Spiced Paneer Tikka & Brown Rice', cals: 430, p: 32, c: 42, f: 14, reason: 'Complete dairy protein and high dietary fiber' },
+                { name: 'Greek Yogurt Berry Crunch Bowl', cals: 280, p: 24, c: 32, f: 6, reason: 'Probiotics for gut health and slow casein protein' },
+                { name: 'Tofu Palak with Whole Wheat Roti', cals: 360, p: 25, c: 40, f: 10, reason: 'Micronutrient dense spinach & plant isoflavones' }
+            ];
+        }
+
+        // Adaptive Workout Suggestions
+        const workoutSuggestions = [
+            { name: 'Core & Posterior Chain Flow', desc: '3 sets × 12 reps (15 mins)', reason: 'Counters prolonged desk posture and activates glutes' },
+            { name: 'HIIT Micro-Cardio Intervals', desc: '4 rounds × 45s work / 15s rest (12 mins)', reason: 'Spikes EPOC metabolism without joint stress' },
+            { name: 'Full-Body Isometric Strength', desc: '3 sets × 45s holds (20 mins)', reason: 'Builds core tension and joint stability' }
+        ];
+
+        return {
+            name,
+            gender,
+            age,
+            goal,
+            diet,
+            sittingHours,
+            sleepHours,
+            targets: { calories: targetCalories, protein: targetProtein, carbs: targetCarbs, fat: targetFat },
+            consumed: { calories: consumedCals, protein: consumedProtein, carbs: consumedCarbs, fat: consumedFat },
+            remainingCals,
+            remainingProtein,
+            remainingCarbs,
+            remainingFat,
+            burnedCals,
+            workoutMins,
+            vitality: {
+                overall: overallVitality,
+                nutrition: nutritionScore,
+                movement: movementScore,
+                recovery: recoveryScore,
+                mindset: moodScore
+            },
+            insights,
+            mealSuggestions,
+            workoutSuggestions
+        };
+    },
+
     async renderAICoach(activeTab = null) {
         if (activeTab) this.aiCoachState.activeTab = activeTab;
         const content = document.getElementById('app-content');
