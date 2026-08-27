@@ -2889,12 +2889,289 @@ const App = {
         }
     },
 
-    // --- MOOD SCREEN ---
+    // --- MOOD SCREEN & MINDFULNESS AUDIO PLAYER ---
 
     moodState: {
         currentMood: null,
         toastVisible: false,
-        toastTimeout: null
+        toastTimeout: null,
+        activeMeditation: null,
+        isPlaying: false,
+        progressSeconds: 0,
+        totalSeconds: 600,
+        soundscape: 'zen', // 'zen' | 'ocean' | 'rain' | 'binaural'
+        volume: 0.7,
+        _audioContext: null,
+        _audioNodes: [],
+        _timerInterval: null,
+        _chimeInterval: null
+    },
+
+    formatMeditationTime(seconds) {
+        const m = Math.floor(seconds / 60);
+        const s = Math.floor(seconds % 60);
+        return `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+    },
+
+    toggleMeditation(title, durationStr, desc) {
+        const state = this.moodState;
+        if (state.activeMeditation && state.activeMeditation.title === title) {
+            this.togglePlayPauseMeditation();
+        } else {
+            this.startMeditation(title, durationStr, desc);
+        }
+    },
+
+    startMeditation(title, durationStr, desc) {
+        const state = this.moodState;
+        const mins = parseInt(durationStr) || 10;
+        state.totalSeconds = mins * 60;
+        state.progressSeconds = 0;
+        state.activeMeditation = { title, duration: durationStr, desc };
+        state.isPlaying = true;
+
+        this.startAmbientAudio(state.soundscape);
+        this.startMeditationTimer();
+        if (this._reRenderMood) this._reRenderMood();
+    },
+
+    togglePlayPauseMeditation() {
+        const state = this.moodState;
+        if (!state.activeMeditation) return;
+
+        state.isPlaying = !state.isPlaying;
+        if (state.isPlaying) {
+            if (state._audioContext && state._audioContext.state === 'suspended') {
+                state._audioContext.resume();
+            } else {
+                this.startAmbientAudio(state.soundscape);
+            }
+            this.startMeditationTimer();
+        } else {
+            if (state._audioContext && state._audioContext.state === 'running') {
+                state._audioContext.suspend();
+            }
+            if (state._timerInterval) clearInterval(state._timerInterval);
+        }
+        if (this._reRenderMood) this._reRenderMood();
+    },
+
+    stopMeditation() {
+        const state = this.moodState;
+        state.isPlaying = false;
+        state.activeMeditation = null;
+        state.progressSeconds = 0;
+        if (state._timerInterval) {
+            clearInterval(state._timerInterval);
+            state._timerInterval = null;
+        }
+        this.stopAmbientAudio();
+        if (this._reRenderMood) this._reRenderMood();
+    },
+
+    setSoundscape(soundscapeType) {
+        this.moodState.soundscape = soundscapeType;
+        if (this.moodState.isPlaying) {
+            this.startAmbientAudio(soundscapeType);
+        }
+        if (this._reRenderMood) this._reRenderMood();
+    },
+
+    seekMeditation(deltaSeconds) {
+        const state = this.moodState;
+        state.progressSeconds = Math.max(0, Math.min(state.totalSeconds, state.progressSeconds + deltaSeconds));
+        if (this._reRenderMood) this._reRenderMood();
+    },
+
+    handleSeekProgress(event) {
+        const state = this.moodState;
+        const rect = event.currentTarget.getBoundingClientRect();
+        const clickX = event.clientX - rect.left;
+        const ratio = Math.max(0, Math.min(1, clickX / rect.width));
+        state.progressSeconds = Math.floor(ratio * state.totalSeconds);
+        if (this._reRenderMood) this._reRenderMood();
+    },
+
+    startMeditationTimer() {
+        const state = this.moodState;
+        if (state._timerInterval) clearInterval(state._timerInterval);
+        state._timerInterval = setInterval(() => {
+            if (state.isPlaying) {
+                state.progressSeconds++;
+                if (state.progressSeconds >= state.totalSeconds) {
+                    this.stopMeditation();
+                } else {
+                    if (this._reRenderMood) this._reRenderMood();
+                }
+            }
+        }, 1000);
+    },
+
+    startAmbientAudio(soundscape = 'zen') {
+        this.stopAmbientAudio();
+        try {
+            const AudioCtx = window.AudioContext || window.webkitAudioContext;
+            if (!AudioCtx) return;
+            const ctx = new AudioCtx();
+            this.moodState._audioContext = ctx;
+            this.moodState._audioNodes = [];
+
+            const masterGain = ctx.createGain();
+            masterGain.gain.setValueAtTime(this.moodState.volume || 0.65, ctx.currentTime);
+            masterGain.connect(ctx.destination);
+            this.moodState._masterGain = masterGain;
+
+            if (soundscape === 'ocean' || soundscape === 'rain') {
+                const bufferSize = ctx.sampleRate * 2.5;
+                const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+                const data = buffer.getChannelData(0);
+                let lastOut = 0.0;
+                for (let i = 0; i < bufferSize; i++) {
+                    const white = Math.random() * 2 - 1;
+                    data[i] = (lastOut + (0.02 * white)) / 1.02;
+                    lastOut = data[i];
+                    data[i] *= 3.2;
+                }
+
+                const noise = ctx.createBufferSource();
+                noise.buffer = buffer;
+                noise.loop = true;
+
+                if (soundscape === 'ocean') {
+                    const filter = ctx.createBiquadFilter();
+                    filter.type = 'bandpass';
+                    filter.frequency.setValueAtTime(320, ctx.currentTime);
+                    filter.Q.setValueAtTime(1.8, ctx.currentTime);
+
+                    const swellGain = ctx.createGain();
+                    swellGain.gain.setValueAtTime(0.25, ctx.currentTime);
+
+                    const lfo = ctx.createOscillator();
+                    lfo.frequency.setValueAtTime(0.12, ctx.currentTime);
+                    const lfoGain = ctx.createGain();
+                    lfoGain.gain.setValueAtTime(0.35, ctx.currentTime);
+
+                    lfo.connect(lfoGain);
+                    lfoGain.connect(swellGain.gain);
+
+                    noise.connect(filter);
+                    filter.connect(swellGain);
+                    swellGain.connect(masterGain);
+
+                    lfo.start();
+                    noise.start();
+                    this.moodState._audioNodes.push(noise, lfo, filter, swellGain, lfoGain);
+                } else {
+                    const filter = ctx.createBiquadFilter();
+                    filter.type = 'bandpass';
+                    filter.frequency.setValueAtTime(1400, ctx.currentTime);
+                    filter.Q.setValueAtTime(0.7, ctx.currentTime);
+
+                    const rainGain = ctx.createGain();
+                    rainGain.gain.setValueAtTime(0.35, ctx.currentTime);
+
+                    noise.connect(filter);
+                    filter.connect(rainGain);
+                    rainGain.connect(masterGain);
+
+                    noise.start();
+                    this.moodState._audioNodes.push(noise, filter, rainGain);
+                }
+            } else if (soundscape === 'binaural') {
+                const merger = ctx.createChannelMerger(2);
+                
+                const oscL = ctx.createOscillator();
+                oscL.type = 'sine';
+                oscL.frequency.setValueAtTime(216, ctx.currentTime);
+                const gainL = ctx.createGain();
+                gainL.gain.setValueAtTime(0.28, ctx.currentTime);
+                oscL.connect(gainL);
+                gainL.connect(merger, 0, 0);
+
+                const oscR = ctx.createOscillator();
+                oscR.type = 'sine';
+                oscR.frequency.setValueAtTime(224, ctx.currentTime);
+                const gainR = ctx.createGain();
+                gainR.gain.setValueAtTime(0.28, ctx.currentTime);
+                oscR.connect(gainR);
+                gainR.connect(merger, 0, 1);
+
+                merger.connect(masterGain);
+                oscL.start();
+                oscR.start();
+                this.moodState._audioNodes.push(oscL, oscR, gainL, gainR, merger);
+            } else {
+                // Zen 432Hz Harmonic drone + Tibetan singing bowls
+                const baseFreqs = [108, 216, 432, 528];
+                baseFreqs.forEach((freq, idx) => {
+                    const osc = ctx.createOscillator();
+                    osc.type = idx % 2 === 0 ? 'sine' : 'triangle';
+                    osc.frequency.setValueAtTime(freq, ctx.currentTime);
+
+                    const oscGain = ctx.createGain();
+                    const baseVol = 0.22 / (idx + 1);
+                    oscGain.gain.setValueAtTime(baseVol, ctx.currentTime);
+
+                    const lfo = ctx.createOscillator();
+                    lfo.frequency.setValueAtTime(0.07 + (idx * 0.02), ctx.currentTime);
+                    const lfoGain = ctx.createGain();
+                    lfoGain.gain.setValueAtTime(baseVol * 0.35, ctx.currentTime);
+                    lfo.connect(lfoGain);
+                    lfoGain.connect(oscGain.gain);
+
+                    osc.connect(oscGain);
+                    oscGain.connect(masterGain);
+
+                    osc.start();
+                    lfo.start();
+                    this.moodState._audioNodes.push(osc, oscGain, lfo, lfoGain);
+                });
+
+                const playChime = () => {
+                    if (!this.moodState.isPlaying || !this.moodState._audioContext) return;
+                    const t = this.moodState._audioContext.currentTime;
+                    const chimeOsc = this.moodState._audioContext.createOscillator();
+                    chimeOsc.type = 'sine';
+                    chimeOsc.frequency.setValueAtTime(528, t);
+                    chimeOsc.frequency.exponentialRampToValueAtTime(432, t + 4.0);
+
+                    const chimeGain = this.moodState._audioContext.createGain();
+                    chimeGain.gain.setValueAtTime(0.001, t);
+                    chimeGain.gain.exponentialRampToValueAtTime(0.18, t + 0.1);
+                    chimeGain.gain.exponentialRampToValueAtTime(0.0001, t + 4.8);
+
+                    chimeOsc.connect(chimeGain);
+                    chimeGain.connect(masterGain);
+
+                    chimeOsc.start(t);
+                    chimeOsc.stop(t + 5.0);
+                };
+
+                this.moodState._chimeInterval = setInterval(playChime, 12000);
+                setTimeout(playChime, 400);
+            }
+        } catch(e) {
+            console.warn("Audio playback init note:", e);
+        }
+    },
+
+    stopAmbientAudio() {
+        const state = this.moodState;
+        if (state._chimeInterval) {
+            clearInterval(state._chimeInterval);
+            state._chimeInterval = null;
+        }
+        if (state._audioNodes && state._audioNodes.length > 0) {
+            state._audioNodes.forEach(node => {
+                try { if (node.stop) node.stop(); } catch(e) {}
+                try { if (node.disconnect) node.disconnect(); } catch(e) {}
+            });
+            state._audioNodes = [];
+        }
+        if (state._audioContext) {
+            try { state._audioContext.close(); } catch(e) {}
+            state._audioContext = null;
+        }
     },
 
     async renderMood() {
@@ -2946,8 +3223,8 @@ const App = {
             const selectedMeditations = state.currentMood ? meditations[state.currentMood] : meditations['Neutral'];
 
             content.innerHTML = `
-                <div class="flex flex-col min-h-screen bg-gradient-to-br from-[#f3e1a8] via-[#e2ebcd] to-[#a8dbd9] relative pb-24">
-                    <div class="max-w-md mx-auto w-full p-4 pt-10 overflow-y-auto h-full pb-32">
+                <div class="flex flex-col min-h-screen bg-gradient-to-br from-[#f3e1a8] via-[#e2ebcd] to-[#a8dbd9] relative pb-28">
+                    <div class="max-w-md mx-auto w-full p-4 pt-10 overflow-y-auto h-full pb-36">
                         
                         <!-- Header -->
                         <div class="flex justify-between items-center mb-1">
@@ -2959,7 +3236,7 @@ const App = {
                         <p class="text-gray-500 text-sm mb-8">Check in with yourself today</p>
 
                         <!-- Mood Selector -->
-                        <div class="bg-white rounded-[2rem] p-6 shadow-sm mb-10">
+                        <div class="bg-white rounded-[2rem] p-6 shadow-sm mb-8">
                             <h2 class="text-[1.35rem] font-medium text-gray-900 mb-6">How are you feeling?</h2>
                             <div class="flex justify-between items-center px-1">
                                 ${moods.map(mood => {
@@ -2981,27 +3258,95 @@ const App = {
 
                         <!-- Recommendations -->
                         <div>
-                            <h2 class="text-xl font-medium text-gray-900 mb-1">Mindfulness & Meditation</h2>
-                            <p class="text-gray-500 text-[13px] mb-6">Curated content to help you relax</p>
+                            <div class="flex justify-between items-end mb-1">
+                                <h2 class="text-xl font-medium text-gray-900">Mindfulness & Meditation</h2>
+                                ${state.isPlaying ? `
+                                    <span class="text-xs text-blue-600 font-semibold flex items-center gap-1.5 animate-pulse">
+                                        <span class="w-2 h-2 rounded-full bg-blue-600"></span>
+                                        Playing Audio
+                                    </span>
+                                ` : ''}
+                            </div>
+                            <p class="text-gray-500 text-[13px] mb-4">Curated content to help you relax</p>
                             
-                            <div class="flex flex-col gap-4">
-                                ${selectedMeditations.map(med => `
-                                    <div class="bg-white rounded-2xl p-5 shadow-sm flex items-center justify-between group cursor-pointer hover:shadow-md transition">
-                                        <div class="pr-4">
-                                            <h3 class="font-medium text-gray-900 text-[16px] mb-1">${med.title}</h3>
-                                            <p class="text-gray-500 text-[13px] leading-relaxed">
-                                                <span class="text-gray-400 font-medium">${med.duration}</span> <span class="text-gray-300">|</span> ${med.desc}
-                                            </p>
+                            <div class="flex flex-col gap-3">
+                                ${selectedMeditations.map(med => {
+                                    const isThisPlaying = state.isPlaying && state.activeMeditation && state.activeMeditation.title === med.title;
+                                    const isThisActive = state.activeMeditation && state.activeMeditation.title === med.title;
+
+                                    return `
+                                        <div onclick="App.toggleMeditation('${med.title.replace(/'/g, "\\'")}', '${med.duration}', '${med.desc.replace(/'/g, "\\'")}')" 
+                                            class="bg-white rounded-2xl p-4 shadow-sm flex items-center justify-between group cursor-pointer hover:shadow-md transition border-2 ${isThisActive ? 'border-[#3b82f6] bg-blue-50/40' : 'border-transparent'}">
+                                            <div class="pr-4 flex-1">
+                                                <div class="flex items-center gap-2 mb-1">
+                                                    <h3 class="font-bold text-gray-900 text-[15px]">${med.title}</h3>
+                                                    ${isThisPlaying ? `
+                                                        <span class="bg-blue-100 text-blue-700 text-[9px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wider animate-pulse">LIVE</span>
+                                                    ` : ''}
+                                                </div>
+                                                <p class="text-gray-500 text-[12px] leading-relaxed">
+                                                    <span class="text-blue-600 font-semibold">${med.duration}</span> <span class="text-gray-300">|</span> ${med.desc}
+                                                </p>
+                                            </div>
+                                            <button onclick="event.stopPropagation(); App.toggleMeditation('${med.title.replace(/'/g, "\\'")}', '${med.duration}', '${med.desc.replace(/'/g, "\\'")}')" 
+                                                class="w-10 h-10 rounded-full ${isThisPlaying ? 'bg-blue-600 text-white shadow-md shadow-blue-500/40' : 'bg-blue-50 text-[#3b82f6] hover:bg-blue-100'} flex items-center justify-center shrink-0 hover:scale-105 transition">
+                                                <i data-lucide="${isThisPlaying ? 'pause' : 'play'}" class="w-4 h-4 ${isThisPlaying ? 'fill-white text-white' : 'fill-[#3b82f6] text-[#3b82f6] ml-0.5'}"></i>
+                                            </button>
                                         </div>
-                                        <div class="w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center shrink-0">
-                                            <i data-lucide="play" class="w-3 h-3 fill-[#3b82f6] text-[#3b82f6] ml-0.5"></i>
-                                        </div>
-                                    </div>
-                                `).join('')}
+                                    `;
+                                }).join('')}
                             </div>
                         </div>
 
                     </div>
+
+                    <!-- Floating Meditation Player Bar -->
+                    ${state.activeMeditation ? `
+                        <div class="fixed bottom-16 left-4 right-4 max-w-md mx-auto bg-gradient-to-r from-[#0c2a4d] via-[#104b68] to-[#0d6e80] text-white rounded-2xl p-4 shadow-2xl border border-teal-400/20 z-40 backdrop-blur-lg">
+                            <div class="flex items-center justify-between gap-3 mb-2.5">
+                                <div class="flex items-center gap-2.5 overflow-hidden">
+                                    <div class="w-9 h-9 rounded-xl bg-teal-400/20 border border-teal-300/30 flex items-center justify-center shrink-0 ${state.isPlaying ? 'animate-pulse' : ''}">
+                                        <i data-lucide="${state.isPlaying ? 'volume-2' : 'volume-x'}" class="w-4 h-4 text-teal-300"></i>
+                                    </div>
+                                    <div class="truncate">
+                                        <div class="flex items-center gap-1.5">
+                                            <h4 class="font-bold text-xs truncate text-white">${state.activeMeditation.title}</h4>
+                                            <span class="bg-teal-400/20 text-teal-300 text-[9px] font-bold px-1.5 py-0.2 rounded uppercase">${state.soundscape}</span>
+                                        </div>
+                                        <p class="text-[11px] text-teal-100/70 truncate">${state.activeMeditation.desc}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2 shrink-0">
+                                    <button onclick="App.togglePlayPauseMeditation()" class="w-8 h-8 rounded-full bg-teal-400 text-gray-900 flex items-center justify-center shadow hover:scale-105 transition font-bold">
+                                        <i data-lucide="${state.isPlaying ? 'pause' : 'play'}" class="w-3.5 h-3.5 fill-current"></i>
+                                    </button>
+                                    <button onclick="App.stopMeditation()" class="w-7 h-7 rounded-full bg-white/10 text-gray-300 hover:text-white flex items-center justify-center hover:bg-white/20 transition">
+                                        <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Progress Bar -->
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-[10px] font-mono text-teal-200">${this.formatMeditationTime(state.progressSeconds)}</span>
+                                <div class="flex-1 bg-white/20 h-1.5 rounded-full overflow-hidden relative cursor-pointer" onclick="App.handleSeekProgress(event)">
+                                    <div class="bg-gradient-to-r from-[#2dd4bf] to-[#38bdf8] h-full rounded-full transition-all duration-200" style="width: ${(state.progressSeconds / Math.max(1, state.totalSeconds)) * 100}%"></div>
+                                </div>
+                                <span class="text-[10px] font-mono text-teal-200">${this.formatMeditationTime(state.totalSeconds)}</span>
+                            </div>
+
+                            <!-- Ambient Soundscape Switcher -->
+                            <div class="flex items-center justify-between pt-1.5 border-t border-white/10">
+                                <span class="text-[9px] font-bold text-teal-200 uppercase tracking-wider">Soundscape:</span>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="App.setSoundscape('zen')" class="px-2 py-0.5 rounded text-[9px] font-medium transition ${state.soundscape === 'zen' ? 'bg-teal-400 text-gray-900 font-bold' : 'bg-white/10 text-gray-300 hover:bg-white/20'}">🧘 Zen 432Hz</button>
+                                    <button onclick="App.setSoundscape('ocean')" class="px-2 py-0.5 rounded text-[9px] font-medium transition ${state.soundscape === 'ocean' ? 'bg-teal-400 text-gray-900 font-bold' : 'bg-white/10 text-gray-300 hover:bg-white/20'}">🌊 Waves</button>
+                                    <button onclick="App.setSoundscape('rain')" class="px-2 py-0.5 rounded text-[9px] font-medium transition ${state.soundscape === 'rain' ? 'bg-teal-400 text-gray-900 font-bold' : 'bg-white/10 text-gray-300 hover:bg-white/20'}">🌧️ Rain</button>
+                                    <button onclick="App.setSoundscape('binaural')" class="px-2 py-0.5 rounded text-[9px] font-medium transition ${state.soundscape === 'binaural' ? 'bg-teal-400 text-gray-900 font-bold' : 'bg-white/10 text-gray-300 hover:bg-white/20'}">🍃 Alpha</button>
+                                </div>
+                            </div>
+                        </div>
+                    ` : ''}
 
                     <!-- Toast Notification -->
                     <div class="fixed bottom-24 left-1/2 -translate-x-1/2 bg-white rounded-full px-5 py-3 shadow-lg flex items-center gap-3 z-40 transition-all duration-300 ${state.toastVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}">
