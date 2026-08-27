@@ -117,85 +117,11 @@
 
 
 
-            <!-- AI Personalization & Smart Insights Banner -->
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/cardAICoach"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/bg_coach_gradient"
-                android:padding="20dp">
-
-                <TextView
-                    android:id="@+id/tvAICoachTag"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="AI PERSONALIZATION ENGINE"
-                    android:textColor="#00E5FF"
-                    android:textSize="11sp"
-                    android:textStyle="bold"
-                    android:letterSpacing="0.08"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
-
-                <TextView
-                    android:id="@+id/tvAIVitalityScore"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="88% Vitality"
-                    android:textColor="#69F0AE"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
-
-                <TextView
-                    android:id="@+id/tvAIHeadline"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="⚡ Real-Time Macro & Recovery Advisor"
-                    android:textColor="@color/white"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-                    android:layout_marginTop="10dp"
-                    app:layout_constraintTop_toBottomOf="@id/tvAICoachTag"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
-
-                <TextView
-                    android:id="@+id/tvAIDesc"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="Synthesizing daily nutrition, workout load, and mood check-ins into smart lifestyle recommendations."
-                    android:textColor="#D1E8F2"
-                    android:textSize="12sp"
-                    android:layout_marginTop="4dp"
-                    app:layout_constraintTop_toBottomOf="@id/tvAIHeadline"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/btnAICoach"
-                    android:layout_width="match_parent"
-                    android:layout_height="44dp"
-                    android:text="💬 Talk with AI Coach &amp; View Insights"
-                    android:textColor="@color/white"
-                    android:textStyle="bold"
-                    android:textSize="13sp"
-                    android:textAllCaps="false"
-                    android:background="@drawable/bg_button_primary"
-                    android:layout_marginTop="14dp"
-                    app:layout_constraintTop_toBottomOf="@id/tvAIDesc"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
             <!-- Daily Progress Header -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp">
+                android:layout_marginTop="32dp">
                 <TextView android:id="@+id/tvDailyTitle" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Daily progress" android:textColor="#0B132B" android:textStyle="bold" android:textSize="18sp" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent"/>
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Live against today's targets" android:textColor="#758494" android:textSize="14sp" android:layout_marginTop="4dp" app:layout_constraintTop_toBottomOf="@id/tvDailyTitle" app:layout_constraintStart_toStartOf="parent"/>
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Details" android:textColor="#1877F2" android:textStyle="bold" android:textSize="14sp" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toTopOf="parent"/>

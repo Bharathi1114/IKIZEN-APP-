@@ -2218,67 +2218,7 @@ const App = {
                                     <div class="w-8 h-[2px] bg-white/20 mx-auto mt-2"></div>
                                 </div>
                             </div>
-
-                        <!-- AI Personalization Engine & Smart Insights Card -->
-                        ${(() => {
-                            const ctx = App.getAICoachContext(meta, user);
-                            const topInsight = ctx.insights && ctx.insights.length > 0 ? ctx.insights[0] : null;
-                            const score = ctx.vitality.overall;
-                            const scoreColor = score >= 80 ? '#2dd4bf' : (score >= 60 ? '#f59e0b' : '#ef4444');
-                            const scoreLabel = score >= 80 ? 'Optimal Vitality' : (score >= 60 ? 'Moderate' : 'Needs Focus');
-
-                            return `
-                                <div class="bg-gradient-to-br from-[#0c2e42] via-[#104b68] to-[#0d6e80] rounded-[2rem] p-5 shadow-lg mb-6 border border-teal-400/20 relative overflow-hidden text-white">
-                                    <!-- Background Ambient Glow -->
-                                    <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-teal-400/15 rounded-full blur-2xl pointer-events-none"></div>
-                                    
-                                    <div class="flex justify-between items-center mb-3">
-                                        <div class="flex items-center gap-2.5">
-                                            <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-[#14b8a6] to-[#06b6d4] flex items-center justify-center shadow-md shadow-teal-500/40">
-                                                <i data-lucide="sparkles" class="w-4 h-4 text-white animate-pulse"></i>
-                                            </div>
-                                            <div>
-                                                <h3 class="font-bold text-xs tracking-wider text-white flex items-center gap-1.5 uppercase">
-                                                    AI Personalization Engine
-                                                    <span class="bg-teal-400/25 text-teal-300 border border-teal-400/30 text-[9px] px-1.5 py-0.5 rounded-full font-bold">SMART</span>
-                                                </h3>
-                                                <p class="text-teal-100/70 text-[11px]">Real-time Health & Lifestyle Synthesis</p>
-                                            </div>
-                                        </div>
-                                        <div class="text-right">
-                                            <div class="text-2xl font-black leading-none" style="color: ${scoreColor}">${score}%</div>
-                                            <span class="text-[10px] text-teal-100/80 font-medium">${scoreLabel}</span>
-                                        </div>
-                                    </div>
-
-                                    ${topInsight ? `
-                                        <div class="bg-white/10 backdrop-blur-md rounded-2xl p-3.5 mb-4 border border-white/10 shadow-sm">
-                                            <div class="flex items-start gap-2.5">
-                                                <span class="text-lg shrink-0">${topInsight.icon || '⚡'}</span>
-                                                <div class="flex-1">
-                                                    <div class="flex items-center justify-between gap-2">
-                                                        <span class="text-xs font-semibold text-teal-100">${topInsight.title}</span>
-                                                        <span class="text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${topInsight.level === 'Warning' ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : (topInsight.level === 'Advisory' ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30' : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30')}">${topInsight.level}</span>
-                                                    </div>
-                                                    <p class="text-[11px] text-gray-200 mt-1 leading-snug">${topInsight.desc}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ` : ''}
-
-                                    <div class="grid grid-cols-2 gap-2.5">
-                                        <button onclick="App.renderAICoach('chat')" class="bg-gradient-to-r from-[#14b8a6] to-[#0d9488] hover:from-[#0d9488] hover:to-[#0f766e] text-white text-xs font-bold py-2.5 px-3 rounded-xl transition flex items-center justify-center gap-1.5 shadow-md shadow-teal-900/30">
-                                            <i data-lucide="message-square" class="w-3.5 h-3.5"></i>
-                                            Talk with AI Coach
-                                        </button>
-                                        <button onclick="App.renderAICoach('insights')" class="bg-white/15 hover:bg-white/25 text-white border border-white/20 text-xs font-bold py-2.5 px-3 rounded-xl transition flex items-center justify-center gap-1.5">
-                                            <i data-lucide="activity" class="w-3.5 h-3.5 text-teal-300"></i>
-                                            Smart Insights
-                                        </button>
-                                    </div>
-                                </div>
-                            `;
-                        })()}
+                        </div>
 
                         <!-- Daily Progress Header -->
                         <div class="flex justify-between items-end mb-4 px-2">
@@ -2404,7 +2344,36 @@ const App = {
                     </div>
 
                     <!-- Bottom Navigation Bar -->
-                    ${App.getBottomNavHtml('home')}
+                    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-6 py-2 flex justify-between items-center z-30 pb-safe">
+                        <button onclick="App.renderDashboard()" class="flex flex-col items-center gap-1 text-[#3b82f6]">
+                            <div class="w-10 h-10 bg-[#eff6ff] rounded-full flex items-center justify-center">
+                                <i data-lucide="target" class="w-6 h-6 fill-[#3b82f6]/20"></i>
+                            </div>
+                            <span class="text-[10px] font-medium">Home</span>
+                        </button>
+                        <button onclick="App.renderWorkoutLog()" class="flex flex-col items-center gap-1 text-gray-400 hover:text-gray-600 transition pt-1">
+                            <i data-lucide="split" class="w-6 h-6 fill-gray-200 rotate-90"></i>
+                            <span class="text-[10px] font-medium mt-0.5">Exercises</span>
+                        </button>
+                        <button onclick="App.renderFoodLog()" class="flex flex-col items-center gap-1 text-gray-400 hover:text-gray-600 transition pt-1">
+                            <i data-lucide="layout-list" class="w-6 h-6 fill-gray-200"></i>
+                            <span class="text-[10px] font-medium mt-0.5">Food</span>
+                        </button>
+                        <button onclick="App.renderMood()" class="flex flex-col items-center gap-1 text-gray-400 hover:text-gray-600 transition pt-1">
+                            <i data-lucide="eye" class="w-6 h-6 fill-gray-200"></i>
+                            <span class="text-[10px] font-medium mt-0.5">Mood</span>
+                        </button>
+                        <button onclick="App.renderSettings()" class="flex flex-col items-center gap-1 text-gray-400 hover:text-gray-600 transition pt-1">
+                            <i data-lucide="wrench" class="w-6 h-6 fill-gray-200"></i>
+                            <span class="text-[10px] font-medium mt-0.5">Settings</span>
+                        </button>
+                    </div>
+                    
+                    <style>
+                        .no-scrollbar::-webkit-scrollbar { display: none; }
+                        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+                        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 16px); }
+                    </style>
                 </div>
             `;
 
@@ -2604,7 +2573,30 @@ const App = {
                     </div>
 
                     <!-- Bottom Navigation Bar -->
-                    ${App.getBottomNavHtml('food')}
+                    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-6 py-2 flex justify-between items-center z-30 pb-safe">
+                        <button onclick="App.renderDashboard()" class="flex flex-col items-center gap-1 text-gray-400 hover:text-gray-600 transition pt-1">
+                            <i data-lucide="target" class="w-6 h-6 fill-gray-200"></i>
+                            <span class="text-[10px] font-medium mt-0.5">Home</span>
+                        </button>
+                        <button onclick="App.renderWorkoutLog()" class="flex flex-col items-center gap-1 text-gray-400 hover:text-gray-600 transition pt-1">
+                            <i data-lucide="split" class="w-6 h-6 fill-gray-200 rotate-90"></i>
+                            <span class="text-[10px] font-medium mt-0.5">Exercises</span>
+                        </button>
+                        <button class="flex flex-col items-center gap-1 text-[#3b82f6]">
+                            <div class="w-10 h-10 bg-[#eff6ff] rounded-full flex items-center justify-center">
+                                <i data-lucide="layout-list" class="w-6 h-6 fill-[#3b82f6]/20"></i>
+                            </div>
+                            <span class="text-[10px] font-medium">Food</span>
+                        </button>
+                        <button onclick="App.renderMood()" class="flex flex-col items-center gap-1 text-gray-400 hover:text-gray-600 transition pt-1">
+                            <i data-lucide="eye" class="w-6 h-6 fill-gray-200"></i>
+                            <span class="text-[10px] font-medium mt-0.5">Mood</span>
+                        </button>
+                        <button onclick="App.renderSettings()" class="flex flex-col items-center gap-1 text-gray-400 hover:text-gray-600 transition pt-1">
+                            <i data-lucide="wrench" class="w-6 h-6 fill-gray-200"></i>
+                            <span class="text-[10px] font-medium mt-0.5">Settings</span>
+                        </button>
+                    </div>
                 </div>
             `;
 
@@ -2821,7 +2813,30 @@ const App = {
                     </div>
 
                     <!-- Bottom Navigation Bar -->
-                    ${App.getBottomNavHtml('exercises')}
+                    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-6 py-2 flex justify-between items-center z-30 pb-safe">
+                        <button onclick="App.renderDashboard()" class="flex flex-col items-center gap-1 text-gray-400 hover:text-gray-600 transition pt-1">
+                            <i data-lucide="target" class="w-6 h-6 fill-gray-200"></i>
+                            <span class="text-[10px] font-medium mt-0.5">Home</span>
+                        </button>
+                        <button class="flex flex-col items-center gap-1 text-[#3b82f6]">
+                            <div class="w-10 h-10 bg-[#eff6ff] rounded-full flex items-center justify-center">
+                                <i data-lucide="split" class="w-6 h-6 fill-[#3b82f6]/20 rotate-90"></i>
+                            </div>
+                            <span class="text-[10px] font-medium">Exercises</span>
+                        </button>
+                        <button onclick="App.renderFoodLog()" class="flex flex-col items-center gap-1 text-gray-400 hover:text-gray-600 transition pt-1">
+                            <i data-lucide="layout-list" class="w-6 h-6 fill-gray-200"></i>
+                            <span class="text-[10px] font-medium mt-0.5">Food</span>
+                        </button>
+                        <button onclick="App.renderMood()" class="flex flex-col items-center gap-1 text-gray-400 hover:text-gray-600 transition pt-1">
+                            <i data-lucide="eye" class="w-6 h-6 fill-gray-200"></i>
+                            <span class="text-[10px] font-medium mt-0.5">Mood</span>
+                        </button>
+                        <button onclick="App.renderSettings()" class="flex flex-col items-center gap-1 text-gray-400 hover:text-gray-600 transition pt-1">
+                            <i data-lucide="wrench" class="w-6 h-6 fill-gray-200"></i>
+                            <span class="text-[10px] font-medium mt-0.5">Settings</span>
+                        </button>
+                    </div>
                 </div>
             `;
 
@@ -2997,7 +3012,30 @@ const App = {
                     </div>
 
                     <!-- Bottom Navigation Bar -->
-                    ${App.getBottomNavHtml('mood')}
+                    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-6 py-2 flex justify-between items-center z-30 pb-safe">
+                        <button onclick="App.renderDashboard()" class="flex flex-col items-center gap-1 text-gray-400 hover:text-gray-600 transition pt-1">
+                            <i data-lucide="target" class="w-6 h-6 fill-gray-200"></i>
+                            <span class="text-[10px] font-medium mt-0.5">Home</span>
+                        </button>
+                        <button onclick="App.renderWorkoutLog()" class="flex flex-col items-center gap-1 text-gray-400 hover:text-gray-600 transition pt-1">
+                            <i data-lucide="split" class="w-6 h-6 fill-gray-200 rotate-90"></i>
+                            <span class="text-[10px] font-medium mt-0.5">Exercises</span>
+                        </button>
+                        <button onclick="App.renderFoodLog()" class="flex flex-col items-center gap-1 text-gray-400 hover:text-gray-600 transition pt-1">
+                            <i data-lucide="layout-list" class="w-6 h-6 fill-gray-200"></i>
+                            <span class="text-[10px] font-medium mt-0.5">Food</span>
+                        </button>
+                        <button class="flex flex-col items-center gap-1 text-[#3b82f6]">
+                            <div class="w-10 h-10 bg-[#eff6ff] rounded-full flex items-center justify-center">
+                                <i data-lucide="eye" class="w-6 h-6 fill-[#3b82f6]/20"></i>
+                            </div>
+                            <span class="text-[10px] font-medium">Mood</span>
+                        </button>
+                        <button onclick="App.renderSettings()" class="flex flex-col items-center gap-1 text-gray-400 hover:text-gray-600 transition pt-1">
+                            <i data-lucide="wrench" class="w-6 h-6 fill-gray-200"></i>
+                            <span class="text-[10px] font-medium mt-0.5">Settings</span>
+                        </button>
+                    </div>
                 </div>
             `;
 
@@ -3033,948 +3071,6 @@ const App = {
         if (error) console.error("Failed to sync mood:", error);
     },
 
-    // =========================================================================
-    // --- AI PERSONALIZATION ENGINE & LIFESTYLE COACH HUB ---
-    // =========================================================================
-
-    aiCoachState: {
-        activeTab: 'chat', // 'chat', 'insights', 'plan'
-        currentPersona: 'holistic', // 'holistic', 'trainer', 'nutritionist', 'mindfulness'
-        isThinking: false,
-        voiceEnabled: false,
-        toastVisible: false,
-        toastMessage: '',
-        messages: [
-            {
-                role: 'assistant',
-                sender: 'iKizen Lifestyle AI',
-                time: 'Just now',
-                text: "👋 Welcome to your **Personalized AI Lifestyle Engine**!\n\nI continuously synthesize your live nutrition, workout load, mood states, sitting duration, and sleep cycles to generate tailored recommendations and smart lifestyle insights.\n\nAsk me anything about your diet, workouts, recovery, or lifestyle balance today!",
-                suggestions: [
-                    "📊 Comprehensive Lifestyle & Progress Audit",
-                    "🥗 Recommend dinner to balance my remaining macros",
-                    "⚡ Modify my workout for fatigue/low energy",
-                    "😴 Best sleep & recovery routine for tonight"
-                ]
-            }
-        ],
-        customHabits: [
-            { id: 'h1', name: 'Morning Hydration: 500ml water + pinch of sea salt', completed: true, category: 'Hydration', impact: '+6% Energy' },
-            { id: 'h2', name: 'Postural Reset: 5-min thoracic & hip flexor stretch', completed: false, category: 'Movement', impact: '+9% Mobility' },
-            { id: 'h3', name: 'Protein Anchor: 30g+ protein in first major meal', completed: true, category: 'Nutrition', impact: '+14% Satiety' },
-            { id: 'h4', name: 'Circadian Sunlight: 10 mins natural light exposure', completed: true, category: 'Recovery', impact: '+11% Focus' },
-            { id: 'h5', name: 'Digital Sunset: Zero blue light screens 45m before bed', completed: false, category: 'Sleep', impact: '+18% Deep Sleep' }
-        ]
-    },
-
-    getAICoachContext(meta = {}, user = null) {
-        const userMeta = meta || (user && user.user_metadata) || {};
-        
-        let weightKg = parseFloat(userMeta.weight) || 70;
-        if (userMeta.weight_unit === 'lbs') weightKg = weightKg / 2.20462;
-        let heightCm = parseFloat(userMeta.height) || 170;
-        if (userMeta.height_unit === 'ft' && heightCm < 10) heightCm = heightCm * 30.48;
-
-        const age = parseInt(userMeta.age) || 28;
-        const gender = userMeta.gender || 'Male';
-        const goal = userMeta.primary_goal || 'Maintain Weight';
-        const activity = userMeta.daily_activity_level || 'Moderately Active';
-        const diet = (userMeta.diet || 'vegetarian').toLowerCase();
-        const sittingHours = parseFloat(userMeta.sitting_hours) || 6;
-        const sleepHours = parseFloat(userMeta.sleep_duration) || 7.5;
-        const name = userMeta.name || 'Champion';
-
-        // Calculate Target Macros
-        let bmr = (10 * weightKg) + (6.25 * heightCm) - (5 * age);
-        bmr = gender === 'Male' ? bmr + 5 : bmr - 161;
-        let activityMultiplier = 1.375;
-        if (activity.toLowerCase().includes('sedentary')) activityMultiplier = 1.2;
-        else if (activity.toLowerCase().includes('light')) activityMultiplier = 1.375;
-        else if (activity.toLowerCase().includes('very')) activityMultiplier = 1.725;
-        else if (activity.toLowerCase().includes('moderate')) activityMultiplier = 1.55;
-
-        let tdee = Math.round(bmr * activityMultiplier);
-        let targetCalories = tdee;
-        if (goal.toLowerCase().includes('lose')) targetCalories = Math.max(1200, tdee - 500);
-        else if (goal.toLowerCase().includes('gain')) targetCalories = tdee + 400;
-
-        const targetProtein = Math.round((targetCalories * 0.25) / 4);
-        const targetCarbs = Math.round((targetCalories * 0.50) / 4);
-        const targetFat = Math.round((targetCalories * 0.25) / 9);
-
-        // Gather Logged Totals
-        const foods = (this.foodLogState && this.foodLogState.log) || [];
-        const workouts = (this.workoutLogState && this.workoutLogState.log) || [];
-        const moods = (this.moodState && this.moodState.logs) || [];
-
-        let consumedCals = 0, consumedProtein = 0, consumedCarbs = 0, consumedFat = 0;
-        foods.forEach(f => {
-            consumedCals += Number(f.calories) || 0;
-            consumedProtein += Number(f.protein) || 0;
-            consumedCarbs += Number(f.carbs) || 0;
-            consumedFat += Number(f.fat) || 0;
-        });
-
-        let burnedCals = 0, workoutMins = 0;
-        workouts.forEach(w => {
-            burnedCals += Number(w.calories_burned || w.calories) || 0;
-            workoutMins += Number(w.duration_minutes || w.duration) || 0;
-        });
-
-        const remainingCals = Math.max(0, targetCalories - consumedCals);
-        const remainingProtein = Math.max(0, targetProtein - consumedProtein);
-        const remainingCarbs = Math.max(0, targetCarbs - consumedCarbs);
-        const remainingFat = Math.max(0, targetFat - consumedFat);
-
-        // Pillar Adherence Scores (0-100)
-        const calAdherence = targetCalories > 0 ? Math.min(100, Math.round((consumedCals / targetCalories) * 100)) : 50;
-        const proteinAdherence = targetProtein > 0 ? Math.min(100, Math.round((consumedProtein / targetProtein) * 100)) : 50;
-        const nutritionScore = Math.min(100, Math.round(calAdherence * 0.4 + proteinAdherence * 0.6));
-
-        const movementScore = workoutMins >= 30 ? 95 : (workoutMins > 0 ? 75 : (sittingHours > 8 ? 52 : 68));
-        const recoveryScore = sleepHours >= 7 && sleepHours <= 9 ? 92 : (sleepHours < 6 ? 58 : 74);
-        const latestMood = moods.length > 0 ? moods[0] : null;
-        const moodScore = latestMood ? (['happy', 'energetic', 'calm'].includes(latestMood.mood?.toLowerCase()) ? 90 : 65) : 78;
-
-        const overallVitality = Math.min(100, Math.max(20, Math.round(
-            nutritionScore * 0.35 + movementScore * 0.25 + recoveryScore * 0.25 + moodScore * 0.15
-        )));
-
-        // Generate 4-Pillar Smart Insights
-        const insights = [];
-
-        // 1. Nutrition Insight
-        if (remainingProtein > 25) {
-            insights.push({
-                pillar: 'Nutrition',
-                icon: '🥩',
-                tag: 'MACRO GAP',
-                title: 'Protein Synthesis Threshold',
-                desc: `You need ${remainingProtein}g more protein to hit optimal muscle preservation. Prioritize a high-protein meal like tofu, paneer, eggs, or lentils.`,
-                status: 'amber'
-            });
-        } else {
-            insights.push({
-                pillar: 'Nutrition',
-                icon: '🥗',
-                tag: 'OPTIMAL FUEL',
-                title: 'Macro Balance Aligned',
-                desc: `Calorie pacing and protein threshold (${consumedProtein}g / ${targetProtein}g) are steady for your ${goal} target.`,
-                status: 'emerald'
-            });
-        }
-
-        // 2. Movement Insight
-        if (sittingHours >= 7 && workoutMins < 20) {
-            insights.push({
-                pillar: 'Movement',
-                icon: '⚡',
-                tag: 'ACTIVE RECOVERY',
-                title: 'High Sitting Load Counterbalance',
-                desc: `Sitting for ${sittingHours} hrs increases hip flexor tension. A quick 10-min mobility stretch or brisk walk will boost glucose clearance.`,
-                status: 'blue'
-            });
-        } else {
-            insights.push({
-                pillar: 'Movement',
-                icon: '🏋️',
-                tag: 'METABOLIC ADAPTATION',
-                title: 'Exertion & Tone Synchronized',
-                desc: `Good physical volume logged (${workoutMins} mins, ~${burnedCals} kcal burned). Great cardiovascular support today.`,
-                status: 'emerald'
-            });
-        }
-
-        // 3. Recovery Insight
-        insights.push({
-            pillar: 'Recovery',
-            icon: '🌙',
-            tag: 'CIRCADIAN SYNC',
-            title: 'Evening Digital Sunset Protocol',
-            desc: `Dim screens 45 mins before your ${sleepHours}h sleep window. Incorporate 4-7-8 breathwork to lower cortisol and increase REM depth.`,
-            status: 'purple'
-        });
-
-        // 4. Mindset Insight
-        insights.push({
-            pillar: 'Mindset',
-            icon: '🧘',
-            tag: 'MENTAL VITALITY',
-            title: 'Cognitive Reset & Dopamine Anchor',
-            desc: `Consistency builds sustainable neuroplasticity. Celebrate completing today's nutrition and hydration milestones.`,
-            status: 'teal'
-        });
-
-        // Curated Tailored Meal Suggestions
-        let mealSuggestions = [];
-        if (diet.includes('vegan')) {
-            mealSuggestions = [
-                { name: 'Tofu & Edamame Quinoa Bowl', cals: 420, p: 32, c: 45, f: 12, reason: 'High leucine plant protein for cell repair' },
-                { name: 'Tempeh Avocado Wrap with Greens', cals: 380, p: 26, c: 38, f: 14, reason: 'Slow burning complex carbs & good fats' },
-                { name: 'High-Protein Lentil & Spinach Stew', cals: 350, p: 28, c: 48, f: 6, reason: 'Rich in iron, magnesium, and dietary fiber' }
-            ];
-        } else if (diet.includes('non-veg') || diet.includes('non_veg')) {
-            mealSuggestions = [
-                { name: 'Herb Grilled Chicken Breast & Asparagus', cals: 390, p: 44, c: 15, f: 12, reason: 'Lean protein density with low glycemic load' },
-                { name: 'Pan-Seared Salmon & Quinoa Medley', cals: 460, p: 38, c: 35, f: 18, reason: 'Rich in Omega-3 fatty acids for recovery' },
-                { name: 'Egg White & Turkey Spinach Scramble', cals: 310, p: 36, c: 10, f: 8, reason: 'Rapid absorption amino acids for tissue synthesis' }
-            ];
-        } else {
-            mealSuggestions = [
-                { name: 'Spiced Paneer Tikka & Brown Rice', cals: 430, p: 32, c: 42, f: 14, reason: 'Complete dairy protein and high dietary fiber' },
-                { name: 'Greek Yogurt Berry Crunch Bowl', cals: 280, p: 24, c: 32, f: 6, reason: 'Probiotics for gut health and slow casein protein' },
-                { name: 'Tofu Palak with Whole Wheat Roti', cals: 360, p: 25, c: 40, f: 10, reason: 'Micronutrient dense spinach & plant isoflavones' }
-            ];
-        }
-
-        // Adaptive Workout Suggestions
-        const workoutSuggestions = [
-            { name: 'Core & Posterior Chain Flow', desc: '3 sets × 12 reps (15 mins)', reason: 'Counters prolonged desk posture and activates glutes' },
-            { name: 'HIIT Micro-Cardio Intervals', desc: '4 rounds × 45s work / 15s rest (12 mins)', reason: 'Spikes EPOC metabolism without joint stress' },
-            { name: 'Full-Body Isometric Strength', desc: '3 sets × 45s holds (20 mins)', reason: 'Builds core tension and joint stability' }
-        ];
-
-        return {
-            name,
-            gender,
-            age,
-            goal,
-            diet,
-            sittingHours,
-            sleepHours,
-            targets: { calories: targetCalories, protein: targetProtein, carbs: targetCarbs, fat: targetFat },
-            consumed: { calories: consumedCals, protein: consumedProtein, carbs: consumedCarbs, fat: consumedFat },
-            remainingCals,
-            remainingProtein,
-            remainingCarbs,
-            remainingFat,
-            burnedCals,
-            workoutMins,
-            vitality: {
-                overall: overallVitality,
-                nutrition: nutritionScore,
-                movement: movementScore,
-                recovery: recoveryScore,
-                mindset: moodScore
-            },
-            insights,
-            mealSuggestions,
-            workoutSuggestions
-        };
-    },
-
-    async renderAICoach(activeTab = null) {
-        if (activeTab) this.aiCoachState.activeTab = activeTab;
-        const content = document.getElementById('app-content');
-
-        content.innerHTML = `
-            <div class="flex h-screen items-center justify-center bg-gradient-to-br from-[#f3e1a8] via-[#e2ebcd] to-[#a8dbd9]">
-                <div class="animate-spin rounded-full h-12 w-12 border-4 border-[#14b8a6] border-t-transparent"></div>
-            </div>
-        `;
-
-        try {
-            const { data: { user } } = await supabaseClient.auth.getUser();
-            const meta = user?.user_metadata || {};
-            const ctx = this.getAICoachContext(meta, user);
-
-            const renderUI = () => {
-                const state = this.aiCoachState;
-                const persona = state.currentPersona;
-                const tab = state.activeTab;
-
-                const personaDetails = {
-                    holistic: { name: 'Holistic Lifestyle Coach', icon: '🌿', desc: 'Balanced vitality, circadian rhythm & habits', color: '#10b981' },
-                    trainer: { name: 'Performance & Fitness Trainer', icon: '🏋️', desc: 'Conditioning, hypertrophy & recovery', color: '#3b82f6' },
-                    nutritionist: { name: 'Precision Nutritionist', icon: '🥗', desc: 'Macro fine-tuning, satiety & meal timing', color: '#f59e0b' },
-                    mindfulness: { name: 'Zen & Mindfulness Mentor', icon: '🧘', desc: 'Stress downregulation, breathwork & sleep', color: '#8b5cf6' }
-                };
-
-                const currentP = personaDetails[persona] || personaDetails.holistic;
-
-                content.innerHTML = `
-                    <div class="flex flex-col min-h-screen bg-gradient-to-br from-[#f3e1a8] via-[#e2ebcd] to-[#a8dbd9] relative pb-24">
-                        <div class="max-w-md mx-auto w-full p-4 pt-8 overflow-y-auto h-full pb-32">
-                            
-                            <!-- Header Bar -->
-                            <div class="flex justify-between items-center mb-4">
-                                <div class="flex items-center gap-2.5">
-                                    <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-[#14b8a6] to-[#06b6d4] flex items-center justify-center shadow-md shadow-teal-500/40 text-white text-lg">
-                                        <i data-lucide="sparkles" class="w-5 h-5 animate-pulse"></i>
-                                    </div>
-                                    <div>
-                                        <h1 class="text-2xl font-black text-[#0f172a] tracking-tight flex items-center gap-1.5">
-                                            iKizen AI Coach
-                                            <span class="bg-teal-500 text-white text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider shadow-sm">ENGINE</span>
-                                        </h1>
-                                        <p class="text-gray-500 text-xs font-medium">Personalized Health & Lifestyle Intelligence</p>
-                                    </div>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <button onclick="App.toggleCoachVoice()" title="Toggle Voice Coach" class="w-9 h-9 rounded-full ${state.voiceEnabled ? 'bg-teal-500 text-white shadow-md shadow-teal-500/40' : 'bg-white/80 text-gray-600 hover:bg-white'} flex items-center justify-center transition">
-                                        <i data-lucide="${state.voiceEnabled ? 'volume-2' : 'volume-x'}" class="w-4 h-4"></i>
-                                    </button>
-                                    <button onclick="App.renderDashboard()" class="w-9 h-9 rounded-full bg-white/80 text-gray-600 hover:bg-white flex items-center justify-center transition shadow-sm">
-                                        <i data-lucide="undo-2" class="w-5 h-5"></i>
-                                    </button>
-                                </div>
-                            </div>
-
-                            <!-- Coaching Persona Selector -->
-                            <div class="bg-white/70 backdrop-blur-md rounded-2xl p-2.5 mb-4 shadow-sm border border-white/60">
-                                <div class="flex items-center justify-between px-1 mb-2">
-                                    <span class="text-[11px] font-bold text-gray-500 uppercase tracking-wider">AI Persona Mode:</span>
-                                    <span class="text-[11px] font-semibold text-teal-700 flex items-center gap-1">
-                                        <span>${currentP.icon}</span> ${currentP.name}
-                                    </span>
-                                </div>
-                                <div class="grid grid-cols-4 gap-1.5">
-                                    <button onclick="App.setAICoachPersona('holistic')" class="py-2 px-1 rounded-xl text-xs font-medium transition flex flex-col items-center gap-0.5 ${persona === 'holistic' ? 'bg-[#10b981] text-white shadow-sm font-bold' : 'bg-white/60 text-gray-700 hover:bg-white'}">
-                                        <span class="text-sm">🌿</span>
-                                        <span class="text-[10px]">Holistic</span>
-                                    </button>
-                                    <button onclick="App.setAICoachPersona('trainer')" class="py-2 px-1 rounded-xl text-xs font-medium transition flex flex-col items-center gap-0.5 ${persona === 'trainer' ? 'bg-[#3b82f6] text-white shadow-sm font-bold' : 'bg-white/60 text-gray-700 hover:bg-white'}">
-                                        <span class="text-sm">🏋️</span>
-                                        <span class="text-[10px]">Trainer</span>
-                                    </button>
-                                    <button onclick="App.setAICoachPersona('nutritionist')" class="py-2 px-1 rounded-xl text-xs font-medium transition flex flex-col items-center gap-0.5 ${persona === 'nutritionist' ? 'bg-[#f59e0b] text-white shadow-sm font-bold' : 'bg-white/60 text-gray-700 hover:bg-white'}">
-                                        <span class="text-sm">🥗</span>
-                                        <span class="text-[10px]">Nutrition</span>
-                                    </button>
-                                    <button onclick="App.setAICoachPersona('mindfulness')" class="py-2 px-1 rounded-xl text-xs font-medium transition flex flex-col items-center gap-0.5 ${persona === 'mindfulness' ? 'bg-[#8b5cf6] text-white shadow-sm font-bold' : 'bg-white/60 text-gray-700 hover:bg-white'}">
-                                        <span class="text-sm">🧘</span>
-                                        <span class="text-[10px]">Mindset</span>
-                                    </button>
-                                </div>
-                            </div>
-
-                            <!-- Main View Tabs -->
-                            <div class="flex bg-white/80 backdrop-blur-md p-1 rounded-2xl shadow-sm mb-5 border border-white/60">
-                                <button onclick="App.switchAICoachTab('chat')" class="flex-1 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 ${tab === 'chat' ? 'bg-gradient-to-r from-[#14b8a6] to-[#0d9488] text-white shadow-sm' : 'text-gray-600 hover:text-gray-900'}">
-                                    <i data-lucide="message-square" class="w-3.5 h-3.5"></i>
-                                    Talk with AI
-                                </button>
-                                <button onclick="App.switchAICoachTab('insights')" class="flex-1 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 ${tab === 'insights' ? 'bg-gradient-to-r from-[#14b8a6] to-[#0d9488] text-white shadow-sm' : 'text-gray-600 hover:text-gray-900'}">
-                                    <i data-lucide="activity" class="w-3.5 h-3.5"></i>
-                                    Smart Insights
-                                </button>
-                                <button onclick="App.switchAICoachTab('plan')" class="flex-1 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 ${tab === 'plan' ? 'bg-gradient-to-r from-[#14b8a6] to-[#0d9488] text-white shadow-sm' : 'text-gray-600 hover:text-gray-900'}">
-                                    <i data-lucide="compass" class="w-3.5 h-3.5"></i>
-                                    Action Plan
-                                </button>
-                            </div>
-
-                            <!-- TAB 1: TALK WITH AI COACH -->
-                            ${tab === 'chat' ? `
-                                <div class="flex flex-col gap-4">
-                                    <!-- Context Quick Pill -->
-                                    <div class="bg-gradient-to-r from-[#0c2e42] to-[#13576e] text-white rounded-2xl p-3.5 shadow-sm border border-teal-500/20 text-xs flex items-center justify-between">
-                                        <div class="flex items-center gap-2">
-                                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-                                            <span class="font-medium text-teal-100">Live Intake Sync:</span>
-                                            <span class="font-bold text-white">${ctx.eatenCals}/${ctx.totalCalories} kcal</span>
-                                            <span class="text-teal-200/80 font-medium">(${ctx.eatenP}/${ctx.proteinGrams}g pro)</span>
-                                        </div>
-                                        <button onclick="App.clearAIChatHistory()" title="Reset chat" class="text-teal-300 hover:text-white text-[11px] underline">Reset</button>
-                                    </div>
-
-                                    <!-- Chat Messages Stream -->
-                                    <div id="ai-chat-stream" class="flex flex-col gap-3 min-h-[300px]">
-                                        ${state.messages.map((msg, index) => `
-                                            <div class="flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}">
-                                                <div class="flex items-center gap-1.5 mb-1 px-1">
-                                                    <span class="text-[10px] font-bold text-gray-500">${msg.sender || (msg.role === 'user' ? 'You' : 'iKizen Coach')}</span>
-                                                    <span class="text-[9px] text-gray-400">&bull; ${msg.time || 'Now'}</span>
-                                                </div>
-                                                <div class="max-w-[88%] rounded-2xl p-4 shadow-sm text-[13px] leading-relaxed ${msg.role === 'user' ? 'bg-gradient-to-r from-[#14b8a6] to-[#0d9488] text-white rounded-br-none shadow-teal-700/20' : 'bg-white text-gray-800 rounded-bl-none border border-gray-100'}">
-                                                    <div class="whitespace-pre-line">${App.formatMarkdownText(msg.text)}</div>
-                                                    
-                                                    ${msg.suggestions && msg.suggestions.length > 0 ? `
-                                                        <div class="mt-3 pt-3 border-t border-gray-100/60 flex flex-wrap gap-1.5">
-                                                            ${msg.suggestions.map(s => `
-                                                                <button onclick="App.handleSendChatMessage('${s.replace(/'/g, "\\'")}')" class="bg-teal-50 hover:bg-teal-100 text-teal-800 text-[11px] font-medium py-1 px-2.5 rounded-full border border-teal-200/60 transition text-left">
-                                                                    ${s}
-                                                                </button>
-                                                            `).join('')}
-                                                        </div>
-                                                    ` : ''}
-                                                </div>
-                                            </div>
-                                        `).join('')}
-
-                                        ${state.isThinking ? `
-                                            <div class="flex items-start gap-2">
-                                                <div class="bg-white rounded-2xl rounded-bl-none p-4 shadow-sm border border-gray-100 flex items-center gap-2">
-                                                    <div class="w-2 h-2 rounded-full bg-teal-500 animate-bounce"></div>
-                                                    <div class="w-2 h-2 rounded-full bg-teal-500 animate-bounce" style="animation-delay: 0.15s"></div>
-                                                    <div class="w-2 h-2 rounded-full bg-teal-500 animate-bounce" style="animation-delay: 0.3s"></div>
-                                                    <span class="text-xs font-semibold text-gray-400 ml-1">AI Coach is thinking...</span>
-                                                </div>
-                                            </div>
-                                        ` : ''}
-                                    </div>
-
-                                    <!-- Chat Input Form -->
-                                    <form onsubmit="App.handleChatSubmit(event)" class="sticky bottom-20 mt-2 bg-white/90 backdrop-blur-md rounded-2xl p-2 shadow-lg border border-gray-200/80 flex items-center gap-2">
-                                        <input id="ai-chat-input" type="text" placeholder="Ask your lifestyle coach anything..." required
-                                            class="flex-1 bg-transparent py-2.5 px-3 text-sm text-gray-800 placeholder-gray-400 focus:outline-none">
-                                        <button type="submit" class="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#14b8a6] to-[#0d9488] hover:from-[#0d9488] hover:to-[#0f766e] text-white flex items-center justify-center transition shadow-md shadow-teal-500/30 shrink-0">
-                                            <i data-lucide="send" class="w-4 h-4"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            ` : ''}
-
-                            <!-- TAB 2: SMART INSIGHTS ENGINE -->
-                            ${tab === 'insights' ? `
-                                <div class="flex flex-col gap-4">
-                                    <!-- Vitality Gauge Card -->
-                                    <div class="bg-gradient-to-br from-[#0c2e42] via-[#104b68] to-[#0d6e80] text-white rounded-[2rem] p-6 shadow-lg border border-teal-400/20 relative overflow-hidden">
-                                        <div class="text-center mb-2">
-                                            <span class="text-teal-300 font-bold text-xs tracking-widest uppercase">LIFESTYLE VITALITY INDEX</span>
-                                        </div>
-
-                                        <div class="flex items-center justify-center my-4">
-                                            <div class="relative w-36 h-36 flex items-center justify-center">
-                                                <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                                                    <circle cx="50" cy="50" r="42" stroke="rgba(255,255,255,0.15)" stroke-width="8" fill="none"/>
-                                                    <circle cx="50" cy="50" r="42" stroke="#2dd4bf" stroke-width="8" fill="none"
-                                                        stroke-dasharray="264"
-                                                        stroke-dashoffset="${264 - (264 * ctx.vitality.overall / 100)}"
-                                                        stroke-linecap="round"
-                                                        style="filter: drop-shadow(0 0 6px #0d9488);"
-                                                        class="transition-all duration-1000"/>
-                                                </svg>
-                                                <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
-                                                    <span class="text-4xl font-black tracking-tight text-white">${ctx.vitality.overall}%</span>
-                                                    <span class="text-[10px] text-teal-200 font-bold uppercase tracking-wider">${ctx.vitality.overall >= 80 ? 'Optimal' : (ctx.vitality.overall >= 60 ? 'Moderate' : 'Needs Focus')}</span>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- 4 Pillars Breakdown -->
-                                        <div class="grid grid-cols-2 gap-3 pt-2 border-t border-white/10 mt-2">
-                                            <div class="bg-white/10 rounded-xl p-2.5 text-center">
-                                                <div class="text-[11px] text-teal-200 font-medium">🥗 Nutrition</div>
-                                                <div class="text-lg font-bold text-white mt-0.5">${ctx.vitality.nutrition}%</div>
-                                                <div class="w-full bg-white/20 h-1 rounded-full mt-1.5 overflow-hidden">
-                                                    <div class="bg-teal-300 h-1 rounded-full" style="width: ${ctx.vitality.nutrition}%"></div>
-                                                </div>
-                                            </div>
-                                            <div class="bg-white/10 rounded-xl p-2.5 text-center">
-                                                <div class="text-[11px] text-teal-200 font-medium">🏃 Movement</div>
-                                                <div class="text-lg font-bold text-white mt-0.5">${ctx.vitality.movement}%</div>
-                                                <div class="w-full bg-white/20 h-1 rounded-full mt-1.5 overflow-hidden">
-                                                    <div class="bg-blue-300 h-1 rounded-full" style="width: ${ctx.vitality.movement}%"></div>
-                                                </div>
-                                            </div>
-                                            <div class="bg-white/10 rounded-xl p-2.5 text-center">
-                                                <div class="text-[11px] text-teal-200 font-medium">🌙 Recovery</div>
-                                                <div class="text-lg font-bold text-white mt-0.5">${ctx.vitality.recovery}%</div>
-                                                <div class="w-full bg-white/20 h-1 rounded-full mt-1.5 overflow-hidden">
-                                                    <div class="bg-indigo-300 h-1 rounded-full" style="width: ${ctx.vitality.recovery}%"></div>
-                                                </div>
-                                            </div>
-                                            <div class="bg-white/10 rounded-xl p-2.5 text-center">
-                                                <div class="text-[11px] text-teal-200 font-medium">🧠 Mindset</div>
-                                                <div class="text-lg font-bold text-white mt-0.5">${ctx.vitality.mindset}%</div>
-                                                <div class="w-full bg-white/20 h-1 rounded-full mt-1.5 overflow-hidden">
-                                                    <div class="bg-pink-300 h-1 rounded-full" style="width: ${ctx.vitality.mindset}%"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Smart Insights List -->
-                                    <div>
-                                        <h3 class="text-gray-900 font-bold text-lg mb-3 px-1 flex items-center justify-between">
-                                            <span>Real-Time AI Insights</span>
-                                            <span class="text-xs font-semibold text-teal-600 bg-teal-50 border border-teal-200 px-2 py-0.5 rounded-full">4 Pillars Active</span>
-                                        </h3>
-
-                                        <div class="flex flex-col gap-3">
-                                            ${ctx.insights.map(item => `
-                                                <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
-                                                    <div class="flex items-start gap-3">
-                                                        <span class="text-2xl shrink-0 p-2 bg-gray-50 rounded-xl">${item.icon}</span>
-                                                        <div class="flex-1">
-                                                            <div class="flex items-center justify-between mb-1">
-                                                                <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">${item.pillar}</span>
-                                                                <span class="text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${item.level === 'Warning' ? 'bg-amber-100 text-amber-800 border border-amber-200' : (item.level === 'Advisory' ? 'bg-blue-100 text-blue-800 border border-blue-200' : 'bg-emerald-100 text-emerald-800 border border-emerald-200')}">${item.level}</span>
-                                                            </div>
-                                                            <h4 class="font-bold text-gray-900 text-sm leading-snug">${item.title}</h4>
-                                                            <p class="text-gray-600 text-xs mt-1 leading-relaxed">${item.desc}</p>
-                                                            
-                                                            <button onclick="App.switchAICoachTab('${item.actionTab}')" class="mt-3 inline-flex items-center gap-1 text-xs font-bold text-teal-700 hover:text-teal-800 bg-teal-50 hover:bg-teal-100 py-1.5 px-3 rounded-lg transition">
-                                                                ${item.actionText} &rarr;
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            `).join('')}
-                                        </div>
-                                    </div>
-
-                                    <!-- 4-Week AI Forecast -->
-                                    <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-                                        <h4 class="font-bold text-gray-900 text-sm mb-1 flex items-center gap-1.5">
-                                            <i data-lucide="trending-up" class="w-4 h-4 text-teal-600"></i>
-                                            4-Week Progression Forecast
-                                        </h4>
-                                        <p class="text-gray-500 text-xs mb-4">Projected progression at current ${ctx.vitality.overall}% lifestyle adherence</p>
-                                        
-                                        <div class="grid grid-cols-4 gap-2 text-center text-xs">
-                                            <div class="bg-teal-50/70 border border-teal-100 rounded-xl p-2.5">
-                                                <span class="text-gray-400 text-[10px] block">Week 1</span>
-                                                <span class="font-bold text-teal-800 mt-1 block">Baseline</span>
-                                                <span class="text-[9px] text-teal-600 font-semibold">+5% Energy</span>
-                                            </div>
-                                            <div class="bg-teal-50/70 border border-teal-100 rounded-xl p-2.5">
-                                                <span class="text-gray-400 text-[10px] block">Week 2</span>
-                                                <span class="font-bold text-teal-800 mt-1 block">Metabolic</span>
-                                                <span class="text-[9px] text-teal-600 font-semibold">-0.8kg Fat</span>
-                                            </div>
-                                            <div class="bg-teal-50/70 border border-teal-100 rounded-xl p-2.5">
-                                                <span class="text-gray-400 text-[10px] block">Week 3</span>
-                                                <span class="font-bold text-teal-800 mt-1 block">Hypertrophy</span>
-                                                <span class="text-[9px] text-teal-600 font-semibold">+4% VO2 Max</span>
-                                            </div>
-                                            <div class="bg-gradient-to-tr from-[#14b8a6] to-[#06b6d4] text-white rounded-xl p-2.5 shadow-sm">
-                                                <span class="text-teal-100 text-[10px] block">Week 4</span>
-                                                <span class="font-bold text-white mt-1 block">Peak Vitality</span>
-                                                <span class="text-[9px] text-teal-100 font-semibold">92% Score</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            ` : ''}
-
-                            <!-- TAB 3: PERSONALIZED ACTION PLAN -->
-                            ${tab === 'plan' ? `
-                                <div class="flex flex-col gap-5">
-                                    <!-- Tailored Meals Section -->
-                                    <div>
-                                        <div class="flex justify-between items-center mb-3 px-1">
-                                            <div>
-                                                <h3 class="text-gray-900 font-bold text-base">Tailored Meal Suggestions</h3>
-                                                <p class="text-gray-500 text-xs">Curated for your ${ctx.diet} diet & remaining ${ctx.remainingCals} kcal</p>
-                                            </div>
-                                            <span class="text-xs font-semibold text-teal-700 bg-teal-50 border border-teal-200 px-2 py-0.5 rounded-full">AI Curated</span>
-                                        </div>
-
-                                        <div class="flex flex-col gap-3">
-                                            ${ctx.tailoredMeals.map(m => `
-                                                <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex items-center justify-between gap-3">
-                                                    <div class="flex-1">
-                                                        <div class="flex items-center gap-1.5">
-                                                            <span class="text-base">🥗</span>
-                                                            <h4 class="font-bold text-gray-900 text-sm">${m.name}</h4>
-                                                        </div>
-                                                        <p class="text-gray-400 text-xs mt-0.5">${m.cals} kcal &bull; ${m.p}g protein &bull; ${m.c}g carbs &bull; ${m.f}g fat</p>
-                                                        <p class="text-teal-700 font-medium text-[11px] mt-1 italic">${m.reason}</p>
-                                                    </div>
-                                                    <button onclick="App.logRecommendedFoodFromAI('${m.name.replace(/'/g, "\\'")}', ${m.cals}, ${m.p}, ${m.c}, ${m.f})" class="bg-gradient-to-r from-[#14b8a6] to-[#0d9488] hover:from-[#0d9488] hover:to-[#0f766e] text-white text-xs font-bold py-2 px-3 rounded-xl transition shrink-0 shadow-sm flex items-center gap-1">
-                                                        <i data-lucide="plus" class="w-3.5 h-3.5"></i>
-                                                        Log Food
-                                                    </button>
-                                                </div>
-                                            `).join('')}
-                                        </div>
-                                    </div>
-
-                                    <!-- Tailored Workouts Section -->
-                                    <div>
-                                        <div class="flex justify-between items-center mb-3 px-1">
-                                            <div>
-                                                <h3 class="text-gray-900 font-bold text-base">Adaptive Workouts</h3>
-                                                <p class="text-gray-500 text-xs">Optimized for ${ctx.goal} & energy state</p>
-                                            </div>
-                                            <span class="text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-full">Adaptive</span>
-                                        </div>
-
-                                        <div class="flex flex-col gap-3">
-                                            ${ctx.tailoredWorkouts.map(w => `
-                                                <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex items-center justify-between gap-3">
-                                                    <div class="flex-1">
-                                                        <div class="flex items-center gap-1.5">
-                                                            <span class="text-base">🏋️</span>
-                                                            <h4 class="font-bold text-gray-900 text-sm">${w.name}</h4>
-                                                        </div>
-                                                        <p class="text-gray-400 text-xs mt-0.5">${w.desc}</p>
-                                                        <p class="text-blue-700 font-medium text-[11px] mt-1 italic">${w.reason}</p>
-                                                    </div>
-                                                    <button onclick="App.logRecommendedWorkoutFromAI('${w.name.replace(/'/g, "\\'")}', '${w.desc.replace(/'/g, "\\'")}')" class="bg-gradient-to-r from-[#3b82f6] to-[#2563eb] hover:from-[#2563eb] hover:to-[#1d4ed8] text-white text-xs font-bold py-2 px-3 rounded-xl transition shrink-0 shadow-sm flex items-center gap-1">
-                                                        <i data-lucide="play" class="w-3.5 h-3.5"></i>
-                                                        Log Workout
-                                                    </button>
-                                                </div>
-                                            `).join('')}
-                                        </div>
-                                    </div>
-
-                                    <!-- Daily Micro-Habits Checklist -->
-                                    <div>
-                                        <div class="flex justify-between items-center mb-3 px-1">
-                                            <div>
-                                                <h3 class="text-gray-900 font-bold text-base">Daily Micro-Habits</h3>
-                                                <p class="text-gray-500 text-xs">High-leverage lifestyle compounders</p>
-                                            </div>
-                                            <span class="text-xs font-semibold text-purple-700 bg-purple-50 border border-purple-200 px-2 py-0.5 rounded-full">Habit Loop</span>
-                                        </div>
-
-                                        <div class="flex flex-col gap-2.5">
-                                            ${state.customHabits.map(h => `
-                                                <div onclick="App.toggleHabitCompletion('${h.id}')" class="cursor-pointer bg-white rounded-2xl p-3.5 shadow-sm border border-gray-100 flex items-center justify-between transition hover:bg-gray-50">
-                                                    <div class="flex items-center gap-3">
-                                                        <div class="w-6 h-6 rounded-lg border-2 ${h.completed ? 'bg-teal-500 border-teal-500 text-white' : 'border-gray-300 bg-white'} flex items-center justify-center transition">
-                                                            ${h.completed ? `<i data-lucide="check" class="w-4 h-4 stroke-[3]"></i>` : ''}
-                                                        </div>
-                                                        <div>
-                                                            <span class="text-xs font-semibold ${h.completed ? 'line-through text-gray-400' : 'text-gray-800'}">${h.name}</span>
-                                                            <span class="text-[10px] text-teal-700 font-medium block">${h.impact}</span>
-                                                        </div>
-                                                    </div>
-                                                    <span class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-gray-100 text-gray-600">${h.category}</span>
-                                                </div>
-                                            `).join('')}
-                                        </div>
-                                    </div>
-                                </div>
-                            ` : ''}
-
-                            <!-- Toast Feedback Notification -->
-                            <div class="fixed bottom-24 left-1/2 -translate-x-1/2 bg-[#0c2e42] text-white rounded-full px-5 py-3 shadow-xl flex items-center gap-2.5 z-50 transition-all duration-300 ${state.toastVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}">
-                                <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i>
-                                <span class="font-semibold text-xs whitespace-nowrap">${state.toastMessage || 'Action synced successfully!'}</span>
-                            </div>
-
-                        </div>
-
-                        <!-- Persistent Bottom Navigation Bar -->
-                        ${App.getBottomNavHtml('aicoach')}
-                    </div>
-                `;
-
-                if (window.lucide) {
-                    lucide.createIcons();
-                }
-
-                // Auto-scroll chat stream
-                const stream = document.getElementById('ai-chat-stream');
-                if (stream) stream.scrollTop = stream.scrollHeight;
-            };
-
-            this._reRenderAICoach = renderUI;
-            renderUI();
-
-        } catch (err) {
-            console.error("Error loading AI Coach:", err);
-            content.innerHTML = `
-                <div class="p-8 text-center mt-20">
-                    <h2 class="text-xl font-bold text-red-500 mb-4">Error loading AI Coach</h2>
-                    <p class="text-gray-600">${err.message}</p>
-                    <button onclick="App.renderDashboard()" class="mt-6 bg-teal-500 text-white px-6 py-2 rounded-full font-semibold">Back to Dashboard</button>
-                </div>
-            `;
-        }
-    },
-
-    switchAICoachTab(tabName) {
-        this.aiCoachState.activeTab = tabName;
-        if (this._reRenderAICoach) this._reRenderAICoach();
-    },
-
-    setAICoachPersona(personaKey) {
-        this.aiCoachState.currentPersona = personaKey;
-        const personaLabels = {
-            holistic: 'Holistic Lifestyle Coach',
-            trainer: 'Performance & Fitness Trainer',
-            nutritionist: 'Precision Nutritionist',
-            mindfulness: 'Zen & Mindfulness Mentor'
-        };
-        this.aiCoachState.messages.push({
-            role: 'assistant',
-            sender: personaLabels[personaKey] || 'iKizen AI Coach',
-            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-            text: `Persona switched to **${personaLabels[personaKey]}**! I will now tailor all lifestyle advice, workout programming, and dietary suggestions according to this coaching discipline.`,
-            suggestions: [
-                "📊 Analyze my lifestyle from this perspective",
-                "🎯 Give me 3 top priorities for today",
-                "⚡ Quick optimization tip"
-            ]
-        });
-        if (this._reRenderAICoach) this._reRenderAICoach();
-    },
-
-    handleChatSubmit(e) {
-        e.preventDefault();
-        const input = document.getElementById('ai-chat-input');
-        if (!input || !input.value.trim()) return;
-        const prompt = input.value.trim();
-        input.value = '';
-        this.handleSendChatMessage(prompt);
-    },
-
-    async handleSendChatMessage(promptText) {
-        if (!promptText) return;
-
-        const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-        // Append user message
-        this.aiCoachState.messages.push({
-            role: 'user',
-            sender: 'You',
-            time: timeStr,
-            text: promptText
-        });
-
-        this.aiCoachState.isThinking = true;
-        if (this._reRenderAICoach) this._reRenderAICoach();
-
-        // Simulate thinking & intelligent reasoning
-        setTimeout(async () => {
-            try {
-                const { data: { user } } = await supabaseClient.auth.getUser();
-                const meta = user?.user_metadata || {};
-                const ctx = this.getAICoachContext(meta, user);
-                const persona = this.aiCoachState.currentPersona;
-
-                const responseObj = this.generateAIResponse(promptText, ctx, persona);
-
-                this.aiCoachState.messages.push({
-                    role: 'assistant',
-                    sender: responseObj.sender,
-                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                    text: responseObj.text,
-                    suggestions: responseObj.suggestions
-                });
-
-                if (this.aiCoachState.voiceEnabled) {
-                    this.speakCoachMessage(responseObj.text);
-                }
-
-            } catch (err) {
-                console.error("AI Coach Response generation failed:", err);
-                this.aiCoachState.messages.push({
-                    role: 'assistant',
-                    sender: 'iKizen AI Coach',
-                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                    text: "I've analyzed your stats: you are pacing well towards your daily targets! Continue logging your meals and workouts to keep your insights sharp.",
-                    suggestions: ["📊 Full Lifestyle Audit", "🥗 Suggest a Meal", "⚡ Workout tweak"]
-                });
-            } finally {
-                this.aiCoachState.isThinking = false;
-                if (this._reRenderAICoach) this._reRenderAICoach();
-            }
-        }, 600);
-    },
-
-    generateAIResponse(prompt, ctx, persona) {
-        const pLower = prompt.toLowerCase();
-
-        // Helper persona titles
-        const senderMap = {
-            holistic: 'Holistic Lifestyle Coach',
-            trainer: 'Performance Trainer',
-            nutritionist: 'Precision Nutritionist',
-            mindfulness: 'Zen Mindfulness Guide'
-        };
-        const sender = senderMap[persona] || 'iKizen Lifestyle AI';
-
-        // 1. Audit / Analysis Intent
-        if (pLower.includes('audit') || pLower.includes('analyze') || pLower.includes('progress') || pLower.includes('how am i doing') || pLower.includes('stats')) {
-            const calPct = Math.round((ctx.eatenCals / Math.max(1, ctx.totalCalories)) * 100);
-            const proPct = Math.round((ctx.eatenP / Math.max(1, ctx.proteinGrams)) * 100);
-
-            return {
-                sender,
-                text: `### 📊 Daily Lifestyle & Bio-Metric Audit\n\n` +
-                      `Here is your real-time physiological snapshot:\n\n` +
-                      `* **Vitality Score:** **${ctx.vitality.overall}%** (${ctx.vitality.overall >= 80 ? 'Optimal' : 'Moderate Pace'})\n` +
-                      `* **Energy Balance:** **${ctx.eatenCals}** / **${ctx.totalCalories} kcal** (${calPct}% consumed, **${ctx.remainingCals} kcal** remaining)\n` +
-                      `* **Protein Synthesis:** **${ctx.eatenP}g** / **${ctx.proteinGrams}g** (${proPct}% target adherence, **${ctx.remainingP}g** gap)\n` +
-                      `* **Carbs & Fats:** Carbs ${ctx.eatenC}g/${ctx.carbGrams}g &bull; Fat ${ctx.eatenF}g/${ctx.fatGrams}g\n` +
-                      `* **Mental Wellness:** Current logged mood is **'${ctx.mood}'**\n` +
-                      `* **Recovery & Circadian:** Sleep logged as **${ctx.sleepDuration}h** &bull; Sitting time **${ctx.sittingHours}h**\n\n` +
-                      `**Coach Prescription:** ${ctx.remainingP > 20 ? 'Target a high-protein dinner to complete your muscle recovery quota.' : 'Macro distribution is well-stabilized. Focus on hydration and digital wind-down.'}`,
-                suggestions: [
-                    "🥗 Recommend dinner to balance my remaining macros",
-                    "⚡ Show mobility exercises for sitting fatigue",
-                    "😴 Sleep protocol for tonight"
-                ]
-            };
-        }
-
-        // 2. Dinner / Food / Macros Intent
-        if (pLower.includes('dinner') || pLower.includes('food') || pLower.includes('meal') || pLower.includes('eat') || pLower.includes('macros') || pLower.includes('protein') || pLower.includes('diet')) {
-            let suggestionsMeal = ctx.tailoredMeals[0] || { name: 'High-Protein Bowl', cals: 380, p: 30 };
-            return {
-                sender,
-                text: `### 🥗 Personalized Nutrition & Macro Prescription\n\n` +
-                      `Based on your **${ctx.diet}** profile and today's remaining budget (**${ctx.remainingCals} kcal** and **${ctx.remainingP}g protein**):\n\n` +
-                      `1. **Recommended Meal:** **${suggestionsMeal.name}**\n` +
-                      `   * Calories: **${suggestionsMeal.cals} kcal**\n` +
-                      `   * Protein: **${suggestionsMeal.p}g**\n` +
-                      `   * Why this works: *${suggestionsMeal.reason || 'Perfect macro alignment'}*\n\n` +
-                      `2. **Hydration & Micronutrient Tip:** Pair with 400ml water and leafy greens to enhance electrolyte absorption without spiking blood sugar.\n\n` +
-                      `*You can log this directly from the **Action Plan** tab with one click!*`,
-                suggestions: [
-                    "📊 How will this affect my daily targets?",
-                    "🥦 Show plant-based snack alternatives",
-                    "⚡ Best post-dinner digestive habit"
-                ]
-            };
-        }
-
-        // 3. Workout / Exercise / Energy Intent
-        if (pLower.includes('workout') || pLower.includes('exercise') || pLower.includes('training') || pLower.includes('energy') || pLower.includes('tired') || pLower.includes('fatigue') || pLower.includes('low energy')) {
-            return {
-                sender,
-                text: `### ⚡ Adaptive Workout & Energy Modulation\n\n` +
-                      `Given your logged sitting duration (**${ctx.sittingHours} hrs**) and current recovery status:\n\n` +
-                      `* **Primary Focus:** **${ctx.tailoredWorkouts[0]?.name || 'Restorative Mobility Flow'}**\n` +
-                      `* **Structure:** 15-20 minutes focusing on spinal extension, hip capsule release, and diaphragmatic breathing.\n` +
-                      `* **Intensity Adjustment:** Since fatigue was noted, reduce high-intensity plyometrics to prevent nervous system overload and shift into active parasympathetic recovery.\n\n` +
-                      `Would you like to log this restorative session now?`,
-                suggestions: [
-                    "🏃 Go to Action Plan to log workout",
-                    "😴 Evening wind-down routine",
-                    "📊 Re-audit my daily vitality"
-                ]
-            };
-        }
-
-        // 4. Sleep / Stress / Wind-down / Mindset Intent
-        if (pLower.includes('sleep') || pLower.includes('wind-down') || pLower.includes('stress') || pLower.includes('anxious') || pLower.includes('relax') || pLower.includes('breath') || pLower.includes('mind')) {
-            return {
-                sender,
-                text: `### 🌙 Neuro-Circadian Wind-Down Protocol\n\n` +
-                      `To maximize slow-wave deep sleep and alleviate stress for mood state **'${ctx.mood}'**:\n\n` +
-                      `1. **Digital Sunset (45m prior):** Cut blue-light screens to allow natural melatonin synthesis.\n` +
-                      `2. **4-7-8 Physiological Breathwork:** Inhale 4s through nose, hold 7s, exhale 8s through mouth (repeat 4 cycles) to downregulate cortisol.\n` +
-                      `3. **Thermal Shift:** A warm shower 60m before bed promotes peripheral vasodilation for rapid sleep onset.\n\n` +
-                      `Target bedtime tonight: **10:30 PM - 11:00 PM** for optimal REM rejuvenation.`,
-                suggestions: [
-                    "🧘 Start 5-min guided breathwork",
-                    "📊 Review full smart insights",
-                    "🥗 What to drink before bed?"
-                ]
-            };
-        }
-
-        // 5. Default Comprehensive Lifestyle Advice
-        return {
-            sender,
-            text: `### 💡 Lifestyle Synthesis & Coach Insight\n\n` +
-                  `I've calibrated your request with your current progress:\n\n` +
-                  `* **Goal Alignment:** You're tracking for **${ctx.goal}** at **${ctx.vitality.overall}% overall vitality**.\n` +
-                  `* **Nutrition Runway:** **${ctx.remainingCals} kcal** remaining (**${ctx.remainingP}g protein**).\n` +
-                  `* **Daily Routine Recommendation:** Stay consistent with your hydration anchor (500ml), maintain light postural movement throughout work intervals, and log your final evening meal.\n\n` +
-                  `How else can I assist your lifestyle optimization today?`,
-            suggestions: [
-                "📊 Analyze my progress & vitality score",
-                "🥗 What should I eat next?",
-                "⚡ Best workout for my goal",
-                "😴 Tonight's sleep routine"
-            ]
-        };
-    },
-
-    formatMarkdownText(text) {
-        if (!text) return '';
-        let formatted = text
-            .replace(/### (.*?)\n/g, '<h4 class="font-bold text-teal-900 text-sm mb-1">$1</h4>')
-            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-            .replace(/\*(.*?)\*/g, '<em>$1</em>')
-            .replace(/\n\n/g, '<br><br>')
-            .replace(/\n\* /g, '<br>&bull; ');
-        return formatted;
-    },
-
-    clearAIChatHistory() {
-        this.aiCoachState.messages = [
-            {
-                role: 'assistant',
-                sender: 'iKizen Lifestyle AI',
-                time: 'Just now',
-                text: "✨ Chat history refreshed! How can I help optimize your lifestyle, nutrition, or workouts today?",
-                suggestions: [
-                    "📊 Comprehensive Lifestyle & Progress Audit",
-                    "🥗 Recommend dinner to balance my remaining macros",
-                    "⚡ Modify my workout for fatigue/low energy",
-                    "😴 Best sleep & recovery routine for tonight"
-                ]
-            }
-        ];
-        if (this._reRenderAICoach) this._reRenderAICoach();
-    },
-
-    toggleHabitCompletion(habitId) {
-        const habit = this.aiCoachState.customHabits.find(h => h.id === habitId);
-        if (habit) {
-            habit.completed = !habit.completed;
-            this.showCoachToast(habit.completed ? `Completed: ${habit.name.split(':')[0]}` : `Unchecked: ${habit.name.split(':')[0]}`);
-            if (this._reRenderAICoach) this._reRenderAICoach();
-        }
-    },
-
-    async logRecommendedFoodFromAI(foodName, cals, p, c, f) {
-        const item = {
-            id: Date.now(),
-            name: foodName,
-            cals: cals,
-            p: p,
-            c: c,
-            f: f,
-            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        };
-        this.foodLogState.log.unshift(item);
-        await this.syncFoodLogToSupabase();
-        this.showCoachToast(`Logged "${foodName}" to Food Diary!`);
-        if (this._reRenderAICoach) this._reRenderAICoach();
-    },
-
-    async logRecommendedWorkoutFromAI(name, desc) {
-        const workout = {
-            id: Date.now(),
-            name: name,
-            sets: 3,
-            reps: "15",
-            kcalMin: 8,
-            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        };
-        this.workoutLogState.log.unshift(workout);
-        await this.syncWorkoutLogToSupabase();
-        this.showCoachToast(`Logged "${name}" to Workout Diary!`);
-        if (this._reRenderAICoach) this._reRenderAICoach();
-    },
-
-    showCoachToast(message) {
-        this.aiCoachState.toastMessage = message;
-        this.aiCoachState.toastVisible = true;
-        if (this.aiCoachState._toastTimeout) clearTimeout(this.aiCoachState._toastTimeout);
-        this.aiCoachState._toastTimeout = setTimeout(() => {
-            this.aiCoachState.toastVisible = false;
-            if (this._reRenderAICoach) this._reRenderAICoach();
-        }, 3000);
-    },
-
-    toggleCoachVoice() {
-        this.aiCoachState.voiceEnabled = !this.aiCoachState.voiceEnabled;
-        this.showCoachToast(this.aiCoachState.voiceEnabled ? "Voice Audio Coach Enabled" : "Voice Audio Coach Muted");
-        if (this._reRenderAICoach) this._reRenderAICoach();
-    },
-
-    speakCoachMessage(text) {
-        if (!('speechSynthesis' in window)) return;
-        window.speechSynthesis.cancel();
-        const cleanText = text.replace(/[*#_&bull;]/g, '').replace(/\[.*?\]/g, '');
-        const utterance = new SpeechSynthesisUtterance(cleanText);
-        utterance.rate = 1.05;
-        utterance.pitch = 1.0;
-        window.speechSynthesis.speak(utterance);
-    },
-
     // --- SETTINGS SCREENS ---
 
     renderSettings() {
@@ -3993,14 +3089,6 @@ const App = {
 
                     <!-- Menu List -->
                     <div class="flex flex-col gap-3">
-                        <button onclick="App.renderAICoach()" class="bg-gradient-to-r from-[#14b8a6] to-[#0d9488] text-white rounded-2xl p-5 flex justify-between items-center shadow-md hover:opacity-95 transition">
-                            <div class="flex items-center gap-3">
-                                <i data-lucide="sparkles" class="w-5 h-5 text-white"></i>
-                                <span class="font-bold text-[16px]">AI Lifestyle Coach & Insights</span>
-                            </div>
-                            <i data-lucide="chevron-right" class="w-5 h-5 text-teal-100"></i>
-                        </button>
-
                         <button onclick="App.renderEditProfile()" class="bg-white rounded-2xl p-5 flex justify-between items-center shadow-sm hover:bg-gray-50 transition">
                             <span class="text-gray-900 font-medium text-[16px]">Profile</span>
                             <i data-lucide="chevron-right" class="w-5 h-5 text-gray-300"></i>
@@ -4035,7 +3123,30 @@ const App = {
                 </div>
 
                 <!-- Bottom Navigation Bar -->
-                ${App.getBottomNavHtml('settings')}
+                <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-6 py-2 flex justify-between items-center z-30 pb-safe">
+                    <button onclick="App.renderDashboard()" class="flex flex-col items-center gap-1 text-gray-400 hover:text-gray-600 transition pt-1">
+                        <i data-lucide="target" class="w-6 h-6 fill-gray-200"></i>
+                        <span class="text-[10px] font-medium mt-0.5">Home</span>
+                    </button>
+                    <button onclick="App.renderWorkoutLog()" class="flex flex-col items-center gap-1 text-gray-400 hover:text-gray-600 transition pt-1">
+                        <i data-lucide="split" class="w-6 h-6 fill-gray-200 rotate-90"></i>
+                        <span class="text-[10px] font-medium mt-0.5">Exercises</span>
+                    </button>
+                    <button onclick="App.renderFoodLog()" class="flex flex-col items-center gap-1 text-gray-400 hover:text-gray-600 transition pt-1">
+                        <i data-lucide="layout-list" class="w-6 h-6 fill-gray-200"></i>
+                        <span class="text-[10px] font-medium mt-0.5">Food</span>
+                    </button>
+                    <button onclick="App.renderMood()" class="flex flex-col items-center gap-1 text-gray-400 hover:text-gray-600 transition pt-1">
+                        <i data-lucide="eye" class="w-6 h-6 fill-gray-200"></i>
+                        <span class="text-[10px] font-medium mt-0.5">Mood</span>
+                    </button>
+                    <button class="flex flex-col items-center gap-1 text-[#3b82f6]">
+                        <div class="w-10 h-10 bg-[#eff6ff] rounded-full flex items-center justify-center">
+                            <i data-lucide="wrench" class="w-6 h-6 fill-[#3b82f6]/20"></i>
+                        </div>
+                        <span class="text-[10px] font-medium">Settings</span>
+                    </button>
+                </div>
             </div>
         `;
         if (window.lucide) lucide.createIcons();
