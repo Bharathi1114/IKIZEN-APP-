@@ -44,6 +44,13 @@ class DashboardActivity : AppCompatActivity() {
         llSettings?.setOnClickListener {
             startActivity(Intent(this, ProfileActivity::class.java))
         }
+
+        findViewById<android.view.View>(R.id.btnAICoach)?.setOnClickListener {
+            startActivity(Intent(this, AICoachActivity::class.java))
+        }
+        findViewById<android.view.View>(R.id.cardAICoach)?.setOnClickListener {
+            startActivity(Intent(this, AICoachActivity::class.java))
+        }
         
         loadTargets()
         

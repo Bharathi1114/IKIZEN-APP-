@@ -96,6 +96,9 @@
         <activity
             android:name=".ForgotPasswordActivity"
             android:exported="false" />
+        <activity
+            android:name=".AICoachActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

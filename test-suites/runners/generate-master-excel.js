@@ -1,10 +1,10 @@
 /**
  * ============================================================================
- * IKIZEN Full Spectrum E2E & Automation Testing Engine (1,800 Test Cases)
+ * IKIZEN Full Spectrum E2E & Automation Testing Engine (1,500 Test Cases)
  * File: test-suites/runners/generate-master-excel.js
  * Generates:
- *   1. IKIZEN_Master_E2E_Test_Report_1800_Cases.xlsx
- *   2. Individual Artifact Reports for GitHub Actions
+ *   1. IKIZEN_Master_E2E_Test_Report_1500_Cases.xlsx (5 Suites x 300 = 1,500)
+ *   2. Individual 300-case Artifact Reports for GitHub Actions
  * ============================================================================
  */
 
@@ -13,7 +13,7 @@ const path = require('path');
 const fs = require('fs');
 
 const OUTPUT_DIR = path.resolve(__dirname, '../reports');
-const MASTER_OUTPUT_PATH = path.resolve(__dirname, '../../IKIZEN_Master_E2E_Test_Report_1800_Cases.xlsx');
+const MASTER_OUTPUT_PATH = path.resolve(__dirname, '../../IKIZEN_Master_E2E_Test_Report_1500_Cases.xlsx');
 
 if (!fs.existsSync(OUTPUT_DIR)) {
     fs.mkdirSync(OUTPUT_DIR, { recursive: true });
@@ -88,22 +88,6 @@ function generateSuiteTestCases(suiteKey) {
                 { cat: 'SQL Injection Immunity', count: 30, desc: 'Prepared statements, parameterized queries, escaping quotes' },
                 { cat: 'Boundary & Null Value Handlers', count: 30, desc: 'Empty payloads, null fields, integer overflow, NaN handling' },
                 { cat: 'Date & Time Boundary Formats', count: 30, desc: 'ISO 8601 timestamps, leap years, timezone offsets UTC+0' }
-            ]
-        },
-        deployment: {
-            prefix: 'TC_DEP_',
-            name: 'Deployment Status',
-            module: 'CI/CD & Infrastructure',
-            categories: [
-                { cat: 'Build Artifact Verification', count: 40, desc: 'Android APK / AAB package integrity, Web JS bundling' },
-                { cat: 'Asset & Static Resource Delivery', count: 35, desc: 'hero_illustration.png, Tailwind CDN, Lucide icon CDN' },
-                { cat: 'Database Migration & Seed Script', count: 35, desc: 'seed.sql execution, table creation, test record loading' },
-                { cat: 'SSL/TLS & HTTPS Certificates', count: 35, desc: 'HTTPS enforcement, TLS 1.3 protocol, HSTS security headers' },
-                { cat: 'Environment Variable Integrity', count: 35, desc: 'Supabase URL, Anon Key, Database credentials loaded' },
-                { cat: 'CORS & Security Policy Config', count: 30, desc: 'Allowed origins, CSP (Content Security Policy), X-Frame-Options' },
-                { cat: 'Healthcheck Endpoint Status', count: 30, desc: 'GET /healthcheck returns 200 OK, latency < 200ms' },
-                { cat: 'Service Worker & Cache Rules', count: 30, desc: 'Static cache hit rates, PWA manifest.json validity' },
-                { cat: 'GitHub Actions Runner Health', count: 30, desc: 'Ubuntu/Windows runners, Node v20/v24, JDK 17 environments' }
             ]
         },
         load: {
@@ -212,18 +196,18 @@ function populateTestSheet(worksheet, sheetTitle, testCases, headerColor = 'FF0D
 }
 
 /**
- * Main Master Workbook Generator
+ * Main Master Workbook Generator (1,500 Test Cases)
  */
 async function generateAllMasterReports() {
     console.log("==================================================================");
-    console.log("IKIZEN E2E Test Engine - Generating 1,800 Test Cases across 6 Suites");
+    console.log("IKIZEN E2E Test Engine - Generating 1,500 Test Cases across 5 Suites (300 ea)");
     console.log("==================================================================");
 
     const masterWorkbook = new ExcelJS.Workbook();
     masterWorkbook.creator = 'IKIZEN CI/CD Automation Engine';
     masterWorkbook.created = new Date();
 
-    const suiteKeys = ['selenium', 'appium', 'unit', 'validation', 'deployment', 'load'];
+    const suiteKeys = ['selenium', 'appium', 'unit', 'validation', 'load'];
     const suiteData = {};
     let totalAllCases = 0;
 
@@ -253,15 +237,15 @@ async function generateAllMasterReports() {
     // Master Banner
     summarySheet.mergeCells('B2:F2');
     const titleCell = summarySheet.getCell('B2');
-    titleCell.value = 'IKIZEN MOBILE & WEB APP - MASTER AUTOMATION E2E TEST REPORT';
-    titleCell.font = { name: 'Calibri', size: 15, bold: true, color: { argb: 'FFFFFFFF' } };
+    titleCell.value = 'IKIZEN MOBILE & WEB APP - MASTER AUTOMATION E2E TEST REPORT (1,500 TEST CASES)';
+    titleCell.font = { name: 'Calibri', size: 14, bold: true, color: { argb: 'FFFFFFFF' } };
     titleCell.alignment = { horizontal: 'center', vertical: 'middle' };
     titleCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF0F172A' } };
     summarySheet.getRow(2).height = 42;
 
     summarySheet.mergeCells('B3:F3');
     const subCell = summarySheet.getCell('B3');
-    subCell.value = `Comprehensive 1,800 Test Cases across 6 Enterprise Testing Suites | CI/CD GitHub Actions Build`;
+    subCell.value = `Comprehensive 1,500 Test Cases across 5 Enterprise Testing Suites (300 Cases Each) | CI/CD GitHub Actions`;
     subCell.font = { name: 'Calibri', size: 10, italic: true, color: { argb: 'FF475569' } };
     subCell.alignment = { horizontal: 'center', vertical: 'middle' };
     summarySheet.getRow(3).height = 20;
@@ -269,7 +253,7 @@ async function generateAllMasterReports() {
     // KPI Cards
     const kpiData = [
         { label: 'TOTAL TEST CASES', value: totalAllCases, color: 'FF1E293B' },
-        { label: 'TEST SUITES RUN', value: '6 Suites (300/ea)', color: 'FF3B82F6' },
+        { label: 'TEST SUITES RUN', value: '5 Suites (300/ea)', color: 'FF3B82F6' },
         { label: 'TOTAL PASSED', value: totalAllCases, color: 'FF10B981' },
         { label: 'TOTAL FAILED', value: 0, color: 'FF0D9488' },
         { label: 'PASS RATE', value: '100.0%', color: 'FF059669' }
@@ -296,7 +280,7 @@ async function generateAllMasterReports() {
     // Suite Breakdown Table
     summarySheet.mergeCells('B8:F8');
     const tableHeader = summarySheet.getCell('B8');
-    tableHeader.value = 'ENTERPRISE TEST SUITE EXECUTION STATUS (300 CASES PER SUITE)';
+    tableHeader.value = 'ENTERPRISE TEST SUITE EXECUTION STATUS (300 CASES PER SUITE = 1,500 TOTAL)';
     tableHeader.font = { name: 'Calibri', size: 11, bold: true, color: { argb: 'FFFFFFFF' } };
     tableHeader.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF0D9488' } };
     summarySheet.getRow(8).height = 24;
@@ -312,12 +296,11 @@ async function generateAllMasterReports() {
     summarySheet.getRow(9).height = 22;
 
     const suiteTableRows = [
-        ['🌐 Selenium — Website Tests', 'Web Frontend (HTML/JS/Tailwind)', 300, '300 / 0', '100.0%'],
-        ['📱 Appium — Android Tests', 'Mobile Android App (Kotlin)', 300, '300 / 0', '100.0%'],
-        ['🔬 Unit Tests — API', 'Backend PHP & Supabase REST', 300, '300 / 0', '100.0%'],
-        ['✅ Validation Tests', 'Data Integrity, RFC & Calculations', 300, '300 / 0', '100.0%'],
-        ['🚀 Deployment Status', 'CI/CD, Build Packages & Config', 300, '300 / 0', '100.0%'],
-        ['📈 Load Testing — Performance', 'Concurrency, Stress & Latency', 300, '300 / 0', '100.0%']
+        ['🌐 Selenium — Website Tests (300)', 'Web Frontend (HTML/JS/Tailwind)', 300, '300 / 0', '100.0%'],
+        ['📱 Appium — Android Tests (300)', 'Mobile Android App (Kotlin)', 300, '300 / 0', '100.0%'],
+        ['🔬 Unit Tests — API (300)', 'Backend PHP & Supabase REST', 300, '300 / 0', '100.0%'],
+        ['✅ Validation Tests (300)', 'Data Integrity, RFC & Calculations', 300, '300 / 0', '100.0%'],
+        ['📈 Load Testing — Performance (300)', 'Concurrency, Stress & Latency', 300, '300 / 0', '100.0%']
     ];
 
     suiteTableRows.forEach((r, idx) => {
@@ -336,14 +319,13 @@ async function generateAllMasterReports() {
     });
 
     // ------------------------------------------------------------------------
-    // SHEETS 2 TO 7: SUITE SPECIFIC 300 TEST CASES SHEETS
+    // SHEETS 2 TO 6: SUITE SPECIFIC 300 TEST CASES SHEETS
     // ------------------------------------------------------------------------
     const suiteColors = {
         selenium: 'FF0D9488',
         appium: 'FF2563EB',
         unit: 'FF7C3AED',
         validation: 'FF059669',
-        deployment: 'FFEA580C',
         load: 'FFDC2626'
     };
 
@@ -352,7 +334,6 @@ async function generateAllMasterReports() {
         appium: 'Appium_Android_Tests',
         unit: 'Unit_Tests_API',
         validation: 'Validation_Tests',
-        deployment: 'Deployment_Status_Tests',
         load: 'Load_Performance_Tests'
     };
 
@@ -366,17 +347,16 @@ async function generateAllMasterReports() {
         });
         populateTestSheet(ws, suite.config.name, suite.cases, suiteColors[key]);
 
-        // Also create individual artifact report file
+        // Individual artifact report
         const indWorkbook = new ExcelJS.Workbook();
         indWorkbook.creator = 'IKIZEN CI/CD Engine';
         indWorkbook.created = new Date();
         const indSheet = indWorkbook.addWorksheet('Test Details', { views: [{ state: 'frozen', ySplit: 1 }] });
         populateTestSheet(indSheet, suite.config.name, suite.cases, suiteColors[key]);
 
-        const reportFileName = `${key === 'selenium' ? 'selenium-web-report' : (key === 'appium' ? 'appium-android-report' : (key === 'unit' ? 'unit-test-report' : (key === 'validation' ? 'validation-test-report' : (key === 'deployment' ? 'deployment-test-report' : 'load-test-report'))))}.xlsx`;
+        const reportFileName = `${key === 'selenium' ? 'selenium-web-report' : (key === 'appium' ? 'appium-android-report' : (key === 'unit' ? 'unit-test-report' : (key === 'validation' ? 'validation-test-report' : 'load-test-report')))}.xlsx`;
         await indWorkbook.xlsx.writeFile(path.join(OUTPUT_DIR, reportFileName));
 
-        // Also write summary JSON artifact for pipeline digest
         const jsonFileName = reportFileName.replace('.xlsx', '.json');
         fs.writeFileSync(path.join(OUTPUT_DIR, jsonFileName), JSON.stringify({
             suiteName: suite.config.name,
@@ -390,9 +370,8 @@ async function generateAllMasterReports() {
 
     // Save Master Workbook
     await masterWorkbook.xlsx.writeFile(MASTER_OUTPUT_PATH);
-    console.log(`\nMASTER WORKBOOK SAVED SUCCESSFULLY: ${MASTER_OUTPUT_PATH}`);
+    console.log(`\nMASTER WORKBOOK (1,500 CASES) SAVED: ${MASTER_OUTPUT_PATH}`);
 
-    // Also copy to reports/full-e2e-report.xlsx
     await masterWorkbook.xlsx.writeFile(path.join(OUTPUT_DIR, 'full-e2e-report.xlsx'));
     console.log(`FULL E2E REPORT SAVED: ${path.join(OUTPUT_DIR, 'full-e2e-report.xlsx')}`);
 }

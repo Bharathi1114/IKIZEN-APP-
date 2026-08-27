@@ -1,0 +1,7 @@
+[build]
+  publish = "IKIZEN_WEB/IKIZEN WEB"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
